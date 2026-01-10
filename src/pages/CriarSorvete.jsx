@@ -24,22 +24,27 @@ export default function CriarSorvete({ onAdicionar }) {
   }
 
   function adicionarSorvete() {
-    if (!tamanhoId) {
-      alert("Selecione um tamanho");
-      return;
-    }
-
-    const sorvete = {
-      tamanhoId,
-      sabores: saboresSelecionados
-    };
-
-    onAdicionar(sorvete);
-
-    // limpa seleção
-    setTamanhoId(null);
-    setSaboresSelecionados([]);
+  if (!tamanhoId) {
+    alert("Selecione um tamanho");
+    return;
   }
+
+  const tamanho = tamanhos.find(t => t.id === tamanhoId);
+  const saboresObj = sabores.filter(s => saboresSelecionados.includes(s.id));
+
+  const sorvete = {
+    tamanhoId,
+    tamanhoDescricao: tamanho.descricao,
+    saboresIds: saboresSelecionados,
+    saboresNomes: saboresObj.map(s => s.nome)
+  };
+
+  onAdicionar(sorvete);
+
+  setTamanhoId(null);
+  setSaboresSelecionados([]);
+}
+
 
   return (
     <div>
