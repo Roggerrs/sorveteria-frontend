@@ -1,20 +1,59 @@
-import React, { useState } from "react";
-import { criarPedido } from "../api/api.js";
-import CriarSorvete from "./CriarSorvete";
+import React, { useEffect, useState } from "react";
+import {
+  getTamanhos,
+  getSabores,
+  criarPedido
+} from "../api/api";
 
 export default function CriarPedido({ atendenteId }) {
+  const [tamanhos, setTamanhos] = useState([]);
+  const [sabores, setSabores] = useState([]);
+
+  const [tamanhoId, setTamanhoId] = useState(null);
+  const [saboresSelecionados, setSaboresSelecionados] = useState([]);
+
   const [sorvetes, setSorvetes] = useState([]);
   const [mensagem, setMensagem] = useState("");
 
-  function adicionarSorvete(sorvete) {
-    setSorvetes([...sorvetes, sorvete]);
+  useEffect(() => {
+    getTamanhos().then(data => setTamanhos(Array.isArray(data) ? data : []));
+    getSabores().then(data => setSabores(Array.isArray(data) ? data : []));
+  }, []);
+
+  function toggleSabor(id) {
+    setSaboresSelecionados(prev =>
+      prev.includes(id)
+        ? prev.filter(s => s !== id)
+        : [...prev, id]
+    );
   }
 
-  function removerSorvete(index) {
-    setSorvetes(sorvetes.filter((_, i) => i !== index));
+  function adicionarSorvete() {
+    if (!tamanhoId || saboresSelecionados.length === 0) {
+      alert("Selecione tamanho e sabores");
+      return;
+    }
+
+    const tamanho = tamanhos.find(t => t.id === tamanhoId);
+    const saboresEscolhidos = sabores.filter(s =>
+      saboresSelecionados.includes(s.id)
+    );
+
+    setSorvetes(prev => [
+      ...prev,
+      {
+        tamanhoId,
+        tamanhoDescricao: tamanho?.descricao ?? "Desconhecido",
+        saboresIds: saboresSelecionados,
+        saboresNomes: saboresEscolhidos.map(s => s.nome)
+      }
+    ]);
+
+    setTamanhoId(null);
+    setSaboresSelecionados([]);
   }
 
-  async function handleCriarPedido() {
+  async function finalizarPedido() {
     if (sorvetes.length === 0) {
       alert("Adicione pelo menos um sorvete");
       return;
@@ -29,13 +68,11 @@ export default function CriarPedido({ atendenteId }) {
     };
 
     try {
-      const pedidoCriado = await criarPedido(payload);
-      setMensagem(
-        `Pedido criado com sucesso! Valor total: R$ ${pedidoCriado.valorTotal}`
-      );
+      const response = await criarPedido(payload);
+      setMensagem(`Pedido criado! Total: R$ ${response.valorTotal}`);
       setSorvetes([]);
-    } catch (e) {
-      alert("Erro ao criar pedido");
+    } catch {
+      alert("Erro ao finalizar pedido");
     }
   }
 
@@ -43,32 +80,55 @@ export default function CriarPedido({ atendenteId }) {
     <div>
       <h2>Criar Pedido</h2>
 
-      <p>
-        <strong>Atendente ID:</strong> {atendenteId}
-      </p>
+      <p><strong>Atendente ID:</strong> {atendenteId}</p>
 
-      <CriarSorvete onAdicionar={adicionarSorvete} />
+      <h3>Novo Sorvete</h3>
+
+      <h4>Tamanho</h4>
+      {Array.isArray(tamanhos) && tamanhos.map(t => (
+        <label key={t.id}>
+          <input
+            type="radio"
+            name="tamanho"
+            checked={tamanhoId === t.id}
+            onChange={() => setTamanhoId(t.id)}
+          />
+          {t.descricao} (R$ {t.precoTamanho})
+          <br />
+        </label>
+      ))}
+
+      <h4>Sabores</h4>
+      {Array.isArray(sabores) && sabores.map(s => (
+        <label key={s.id}>
+          <input
+            type="checkbox"
+            checked={saboresSelecionados.includes(s.id)}
+            onChange={() => toggleSabor(s.id)}
+          />
+          {s.nome} (+ R$ {s.precoAdicional})
+          <br />
+        </label>
+      ))}
+
+      <button onClick={adicionarSorvete}>
+        Adicionar Sorvete
+      </button>
 
       <h3>Sorvetes do Pedido</h3>
 
-      {sorvetes.length === 0 && (
-        <p>Nenhum sorvete adicionado</p>
-      )}
+      {sorvetes.length === 0 && <p>Nenhum sorvete adicionado</p>}
 
       <ul>
         {sorvetes.map((s, index) => (
           <li key={index}>
             <strong>{s.tamanhoDescricao}</strong><br />
-            Sabores: {s.saboresNomes.join(", ")}<br />
-            <button onClick={() => removerSorvete(index)}>
-              Remover
-            </button>
+            Sabores: {s.saboresNomes.join(", ")}
           </li>
         ))}
       </ul>
 
-      <br />
-      <button onClick={handleCriarPedido}>
+      <button onClick={finalizarPedido}>
         Finalizar Pedido
       </button>
 

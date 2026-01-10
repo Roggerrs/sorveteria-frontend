@@ -1,15 +1,32 @@
 const BASE_URL = "http://localhost:8080";
 
+async function safeJson(response) {
+  if (!response.ok) {
+    return [];
+  }
+
+  const text = await response.text();
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return [];
+  }
+}
+
 export async function getAtendentes() {
-  return fetch(`${BASE_URL}/atendentes`).then(r => r.json());
+  const r = await fetch(`${BASE_URL}/atendentes`);
+  return safeJson(r);
 }
 
 export async function getTamanhos() {
-  return fetch(`${BASE_URL}/tamanhos`).then(r => r.json());
+  const r = await fetch(`${BASE_URL}/tamanhos`);
+  return safeJson(r);
 }
 
 export async function getSabores() {
-  return fetch(`${BASE_URL}/sabores`).then(r => r.json());
+  const r = await fetch(`${BASE_URL}/sabores`);
+  return safeJson(r);
 }
 
 export async function criarPedido(dados) {
@@ -23,9 +40,10 @@ export async function criarPedido(dados) {
     throw new Error("Erro ao criar pedido");
   }
 
-  return r.json(); // ← pedido + total
+  return r.json(); // backend retorna pedido + total
 }
 
 export async function listarPedidos() {
-  return fetch(`${BASE_URL}/pedidos`).then(r => r.json());
+  const r = await fetch(`${BASE_URL}/pedidos`);
+  return safeJson(r);
 }
