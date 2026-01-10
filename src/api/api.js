@@ -1,36 +1,40 @@
 const BASE_URL = "http://localhost:8080";
 
-/* =========================
-   ATENDENTES
-========================= */
 export async function listarAtendentes() {
-  const res = await fetch(`${BASE_URL}/atendentes`);
-  if (!res.ok) throw new Error("Erro ao buscar atendentes");
-  return res.json();
+  const r = await fetch(`${BASE_URL}/atendentes`);
+  return r.json();
 }
 
-/* =========================
-   PEDIDOS
-========================= */
+export async function listarTamanhos() {
+  const r = await fetch(`${BASE_URL}/tamanhos`);
+  return r.json();
+}
+
+export async function listarSabores() {
+  const r = await fetch(`${BASE_URL}/sabores`);
+  return r.json();
+}
+
+export async function criarPedido(dados) {
+  const r = await fetch(`${BASE_URL}/pedidos`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(dados),
+  });
+
+  if (!r.ok) {
+    throw new Error("Erro ao criar pedido");
+  }
+
+  return r.json();
+}
+
 export async function listarPedidos() {
-  const res = await fetch(`${BASE_URL}/pedidos`);
-  if (!res.ok) throw new Error("Erro ao buscar pedidos");
-  return res.json();
+  const r = await fetch(`${BASE_URL}/pedidos`);
+  return r.json();
 }
 
 export async function buscarPedidoPorId(id) {
-  const res = await fetch(`${BASE_URL}/pedidos/${id}`);
-  if (!res.ok) throw new Error("Erro ao buscar pedido");
-  return res.json();
-}
-
-export async function criarPedido(payload) {
-  const res = await fetch(`${BASE_URL}/pedidos`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (!res.ok) throw new Error("Erro ao criar pedido");
-  return res.json();
+  const r = await fetch(`${BASE_URL}/pedidos/${id}`);
+  return r.json();
 }
