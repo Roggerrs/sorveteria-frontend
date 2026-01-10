@@ -6,24 +6,21 @@ export default function CriarPedido({ atendenteId }) {
   const [sorvetes, setSorvetes] = useState([]);
   const [mensagem, setMensagem] = useState("");
 
-  // recebe o sorvete vindo do CriarSorvete
   function adicionarSorvete(sorvete) {
     setSorvetes([...sorvetes, sorvete]);
   }
 
-  // remove sorvete da lista
   function removerSorvete(index) {
     setSorvetes(sorvetes.filter((_, i) => i !== index));
   }
 
-  // cria o pedido no backend
   async function handleCriarPedido() {
     if (sorvetes.length === 0) {
       alert("Adicione pelo menos um sorvete");
       return;
     }
 
-    // PAYLOAD CORRETO (backend só quer IDs)
+    // 🔴 PAYLOAD EXATO QUE O BACKEND ESPERA
     const payload = {
       atendenteId,
       sorvetes: sorvetes.map(s => ({
@@ -51,7 +48,6 @@ export default function CriarPedido({ atendenteId }) {
         <strong>Atendente ID:</strong> {atendenteId}
       </p>
 
-      {/* COMPONENTE PARA MONTAR O SORVETE */}
       <CriarSorvete onAdicionar={adicionarSorvete} />
 
       <h3>Sorvetes do Pedido</h3>
