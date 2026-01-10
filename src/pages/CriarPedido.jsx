@@ -4,7 +4,7 @@ import CriarSorvete from "./CriarSorvete";
 
 export default function CriarPedido({ atendenteId }) {
   const [sorvetes, setSorvetes] = useState([]);
-  const [pedidoCriado, setPedidoCriado] = useState(null);
+  const [mensagem, setMensagem] = useState("");
 
   function adicionarSorvete(sorvete) {
     setSorvetes([...sorvetes, sorvete]);
@@ -29,8 +29,10 @@ export default function CriarPedido({ atendenteId }) {
     };
 
     try {
-      const resposta = await criarPedido(payload);
-      setPedidoCriado(resposta);
+      const pedidoCriado = await criarPedido(payload);
+      setMensagem(
+        `Pedido criado com sucesso! Valor total: R$ ${pedidoCriado.valorTotal}`
+      );
       setSorvetes([]);
     } catch (e) {
       alert("Erro ao criar pedido");
@@ -49,7 +51,9 @@ export default function CriarPedido({ atendenteId }) {
 
       <h3>Sorvetes do Pedido</h3>
 
-      {sorvetes.length === 0 && <p>Nenhum sorvete adicionado</p>}
+      {sorvetes.length === 0 && (
+        <p>Nenhum sorvete adicionado</p>
+      )}
 
       <ul>
         {sorvetes.map((s, index) => (
@@ -64,30 +68,11 @@ export default function CriarPedido({ atendenteId }) {
       </ul>
 
       <br />
-
       <button onClick={handleCriarPedido}>
-        Criar Pedido
+        Finalizar Pedido
       </button>
 
-      {/* RESUMO DO PEDIDO RETORNADO PELO BACKEND */}
-      {pedidoCriado && (
-        <>
-          <hr />
-          <h3>Pedido Criado</h3>
-          <p><strong>ID:</strong> {pedidoCriado.id}</p>
-          <p><strong>Atendente:</strong> {pedidoCriado.nomeAtendente}</p>
-
-          <ul>
-            {pedidoCriado.sorvetes.map((s, i) => (
-              <li key={i}>
-                {s.tamanho} — {s.sabores.join(", ")} — R$ {s.valor}
-              </li>
-            ))}
-          </ul>
-
-          <h3>Valor Total: R$ {pedidoCriado.valorTotal}</h3>
-        </>
-      )}
+      {mensagem && <p>{mensagem}</p>}
     </div>
   );
 }

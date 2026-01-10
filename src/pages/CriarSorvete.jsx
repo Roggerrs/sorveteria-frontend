@@ -9,8 +9,13 @@ export default function CriarSorvete({ onAdicionar }) {
   const [saboresSelecionados, setSaboresSelecionados] = useState([]);
 
   useEffect(() => {
-    getTamanhos().then(setTamanhos);
-    getSabores().then(setSabores);
+    getTamanhos()
+      .then(data => setTamanhos(Array.isArray(data) ? data : []))
+      .catch(() => setTamanhos([]));
+
+    getSabores()
+      .then(data => setSabores(Array.isArray(data) ? data : []))
+      .catch(() => setSabores([]));
   }, []);
 
   function toggleSabor(id) {
@@ -29,30 +34,34 @@ export default function CriarSorvete({ onAdicionar }) {
       return;
     }
 
+    if (saboresSelecionados.length === 0) {
+      alert("Selecione ao menos um sabor");
+      return;
+    }
+
     const tamanho = tamanhos.find(t => t.id === tamanhoId);
-    const saboresEscolhidos = sabores.filter(s =>
+    const saboresObj = sabores.filter(s =>
       saboresSelecionados.includes(s.id)
     );
 
-    const sorvete = {
-      tamanhoId: tamanho.id,
+    onAdicionar({
+      tamanhoId,
       tamanhoDescricao: tamanho.descricao,
       saboresIds: saboresSelecionados,
-      saboresNomes: saboresEscolhidos.map(s => s.nome)
-    };
+      saboresNomes: saboresObj.map(s => s.nome)
+    });
 
-    onAdicionar(sorvete);
-
+    // limpa seleção
     setTamanhoId(null);
     setSaboresSelecionados([]);
   }
 
   return (
     <div>
-      <h3>Montar Sorvete</h3>
+      <h3>Novo Sorvete</h3>
 
       <h4>Tamanho</h4>
-      {tamanhos.map(t => (
+      {Array.isArray(tamanhos) && tamanhos.map(t => (
         <div key={t.id}>
           <label>
             <input
@@ -67,7 +76,7 @@ export default function CriarSorvete({ onAdicionar }) {
       ))}
 
       <h4>Sabores</h4>
-      {sabores.map(s => (
+      {Array.isArray(sabores) && sabores.map(s => (
         <div key={s.id}>
           <label>
             <input
@@ -81,7 +90,6 @@ export default function CriarSorvete({ onAdicionar }) {
       ))}
 
       <br />
-
       <button onClick={adicionarSorvete}>
         Adicionar Sorvete
       </button>
