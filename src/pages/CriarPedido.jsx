@@ -4,7 +4,7 @@ import CriarSorvete from "./CriarSorvete";
 
 export default function CriarPedido({ atendenteId }) {
   const [sorvetes, setSorvetes] = useState([]);
-  const [mensagem, setMensagem] = useState("");
+  const [pedidoCriado, setPedidoCriado] = useState(null);
 
   function adicionarSorvete(sorvete) {
     setSorvetes([...sorvetes, sorvete]);
@@ -20,7 +20,6 @@ export default function CriarPedido({ atendenteId }) {
       return;
     }
 
-    // 🔴 PAYLOAD EXATO QUE O BACKEND ESPERA
     const payload = {
       atendenteId,
       sorvetes: sorvetes.map(s => ({
@@ -30,10 +29,8 @@ export default function CriarPedido({ atendenteId }) {
     };
 
     try {
-      const pedidoCriado = await criarPedido(payload);
-      setMensagem(
-        `Pedido criado com sucesso! Valor total: R$ ${pedidoCriado.valorTotal}`
-      );
+      const resposta = await criarPedido(payload);
+      setPedidoCriado(resposta);
       setSorvetes([]);
     } catch (e) {
       alert("Erro ao criar pedido");
@@ -52,9 +49,7 @@ export default function CriarPedido({ atendenteId }) {
 
       <h3>Sorvetes do Pedido</h3>
 
-      {sorvetes.length === 0 && (
-        <p>Nenhum sorvete adicionado</p>
-      )}
+      {sorvetes.length === 0 && <p>Nenhum sorvete adicionado</p>}
 
       <ul>
         {sorvetes.map((s, index) => (
@@ -74,7 +69,25 @@ export default function CriarPedido({ atendenteId }) {
         Criar Pedido
       </button>
 
-      {mensagem && <p>{mensagem}</p>}
+      {/* RESUMO DO PEDIDO RETORNADO PELO BACKEND */}
+      {pedidoCriado && (
+        <>
+          <hr />
+          <h3>Pedido Criado</h3>
+          <p><strong>ID:</strong> {pedidoCriado.id}</p>
+          <p><strong>Atendente:</strong> {pedidoCriado.nomeAtendente}</p>
+
+          <ul>
+            {pedidoCriado.sorvetes.map((s, i) => (
+              <li key={i}>
+                {s.tamanho} — {s.sabores.join(", ")} — R$ {s.valor}
+              </li>
+            ))}
+          </ul>
+
+          <h3>Valor Total: R$ {pedidoCriado.valorTotal}</h3>
+        </>
+      )}
     </div>
   );
 }
