@@ -1,82 +1,74 @@
 import React, { useEffect, useState } from "react";
-import { getTamanhos, getSabores } from "../api/api.js";
 
-export default function CriarSorvete({ onAdicionar }) {
+const BASE_URL = "http://localhost:8080";
+
+export default function CriarPedido({ atendenteId }) {
   const [tamanhos, setTamanhos] = useState([]);
   const [sabores, setSabores] = useState([]);
 
-  const [tamanhoId, setTamanhoId] = useState(null);
+  const [tamanhoId, setTamanhoId] = useState("");
   const [saboresSelecionados, setSaboresSelecionados] = useState([]);
 
   useEffect(() => {
-    getTamanhos()
-      .then(data => setTamanhos(Array.isArray(data) ? data : []))
-      .catch(() => setTamanhos([]));
+    fetch(`${BASE_URL}/tamanhos`)
+      .then((res) => res.json())
+      .then(setTamanhos);
 
-    getSabores()
-      .then(data => setSabores(Array.isArray(data) ? data : []))
-      .catch(() => setSabores([]));
+    fetch(`${BASE_URL}/sabores`)
+      .then((res) => res.json())
+      .then(setSabores);
   }, []);
 
   function toggleSabor(id) {
-    if (saboresSelecionados.includes(id)) {
-      setSaboresSelecionados(
-        saboresSelecionados.filter(s => s !== id)
-      );
-    } else {
-      setSaboresSelecionados([...saboresSelecionados, id]);
-    }
+    setSaboresSelecionados((prev) =>
+      prev.includes(id)
+        ? prev.filter((s) => s !== id)
+        : [...prev, id]
+    );
   }
 
-  function adicionarSorvete() {
-    if (!tamanhoId) {
-      alert("Selecione um tamanho");
+  function salvarPedido() {
+    if (!tamanhoId || saboresSelecionados.length === 0) {
+      alert("Selecione o tamanho e pelo menos um sabor");
       return;
     }
 
-    if (saboresSelecionados.length === 0) {
-      alert("Selecione ao menos um sabor");
-      return;
-    }
-
-    const tamanho = tamanhos.find(t => t.id === tamanhoId);
-    const saboresObj = sabores.filter(s =>
-      saboresSelecionados.includes(s.id)
-    );
-
-    onAdicionar({
+    const pedido = {
+      atendenteId,
       tamanhoId,
-      tamanhoDescricao: tamanho.descricao,
       saboresIds: saboresSelecionados,
-      saboresNomes: saboresObj.map(s => s.nome)
-    });
+    };
 
-    // limpa seleção
-    setTamanhoId(null);
-    setSaboresSelecionados([]);
+    fetch(`${BASE_URL}/pedidos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(pedido),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error();
+        alert("Pedido criado com sucesso!");
+        setSaboresSelecionados([]);
+        setTamanhoId("");
+      })
+      .catch(() => alert("Erro ao criar pedido"));
   }
 
   return (
     <div>
-      <h3>Novo Sorvete</h3>
+      <h2>Criar Pedido</h2>
 
-      <h4>Tamanho</h4>
-      {Array.isArray(tamanhos) && tamanhos.map(t => (
-        <div key={t.id}>
-          <label>
-            <input
-              type="radio"
-              name="tamanho"
-              checked={tamanhoId === t.id}
-              onChange={() => setTamanhoId(t.id)}
-            />
-            {t.descricao} (R$ {t.precoTamanho})
-          </label>
-        </div>
-      ))}
+      <h3>Tamanho</h3>
+      <select value={tamanhoId} onChange={(e) => setTamanhoId(e.target.value)}>
+        <option value="">Selecione</option>
+        {tamanhos.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.descricao} - R$ {t.precoTamanho}
+          </option>
+        ))}
+      </select>
 
-      <h4>Sabores</h4>
-      {Array.isArray(sabores) && sabores.map(s => (
+      <h3>Sabores</h3>
+      {sabores.map((s) => (
         <div key={s.id}>
           <label>
             <input
@@ -84,15 +76,13 @@ export default function CriarSorvete({ onAdicionar }) {
               checked={saboresSelecionados.includes(s.id)}
               onChange={() => toggleSabor(s.id)}
             />
-            {s.nome} (+ R$ {s.precoAdicional})
+            {s.nome}
           </label>
         </div>
       ))}
 
       <br />
-      <button onClick={adicionarSorvete}>
-        Adicionar Sorvete
-      </button>
+      <button onClick={salvarPedido}>Finalizar Pedido</button>
     </div>
   );
 }

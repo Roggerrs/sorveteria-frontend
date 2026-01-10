@@ -1,21 +1,26 @@
-import { useEffect, useState } from "react";
-import { listarAtendentes } from "../api/api";
+import React, { useEffect, useState } from "react";
+
+const BASE_URL = "http://localhost:8080";
 
 export default function SelecionarAtendente({ onSelecionar }) {
   const [atendentes, setAtendentes] = useState([]);
 
   useEffect(() => {
-    listarAtendentes()
-      .then(setAtendentes)
-      .catch(() => alert("Erro ao carregar atendentes"));
+    fetch(`${BASE_URL}/atendentes`)
+      .then(res => res.json())
+      .then(setAtendentes);
   }, []);
 
   return (
     <div>
-      <h2>Selecione o atendente</h2>
+      <h1>Selecione o atendente</h1>
 
-      {atendentes.map((a) => (
-        <button key={a.id} onClick={() => onSelecionar(a.id)}>
+      {atendentes.map(a => (
+        <button
+          key={a.id}
+          style={{ marginRight: 10, padding: "10px 20px" }}
+          onClick={() => onSelecionar(a.id)}
+        >
           {a.nome}
         </button>
       ))}

@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  listarTamanhos,
-  listarSabores,
-  criarPedido
-} from "../api/api";
+
+const BASE_URL = "http://localhost:8080";
 
 export default function CriarPedido({ atendenteId }) {
   const [tamanhos, setTamanhos] = useState([]);
@@ -12,12 +9,9 @@ export default function CriarPedido({ atendenteId }) {
   const [tamanhoId, setTamanhoId] = useState(null);
   const [saboresSelecionados, setSaboresSelecionados] = useState([]);
 
-  const [sorvetes, setSorvetes] = useState([]);
-  const [mensagem, setMensagem] = useState("");
-
   useEffect(() => {
-    listarTamanhos().then(setTamanhos);
-    listarSabores().then(setSabores);
+    fetch(`${BASE_URL}/tamanhos`).then(r => r.json()).then(setTamanhos);
+    fetch(`${BASE_URL}/sabores`).then(r => r.json()).then(setSabores);
   }, []);
 
   function toggleSabor(id) {
@@ -28,99 +22,54 @@ export default function CriarPedido({ atendenteId }) {
     );
   }
 
-  function adicionarSorvete() {
-    if (!tamanhoId || saboresSelecionados.length === 0) {
-      alert("Selecione tamanho e sabores");
-      return;
-    }
-
-    const tamanho = tamanhos.find(t => t.id === tamanhoId);
-    const saboresEscolhidos = sabores.filter(s =>
-      saboresSelecionados.includes(s.id)
-    );
-
-    setSorvetes(prev => [
-      ...prev,
-      {
+  function finalizarPedido() {
+    fetch(`${BASE_URL}/pedidos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        atendenteId,
         tamanhoId,
-        tamanhoDescricao: tamanho.descricao,
-        saboresIds: saboresSelecionados,
-        saboresNomes: saboresEscolhidos.map(s => s.nome)
-      }
-    ]);
-
-    setTamanhoId(null);
-    setSaboresSelecionados([]);
-  }
-
-  async function finalizarPedido() {
-    if (sorvetes.length === 0) {
-      alert("Adicione pelo menos um sorvete");
-      return;
-    }
-
-    const payload = {
-      atendenteId,
-      sorvetes: sorvetes.map(s => ({
-        tamanhoId: s.tamanhoId,
-        sabores: s.saboresIds
-      }))
-    };
-
-    const response = await criarPedido(payload);
-    setMensagem(`Pedido criado! Total: R$ ${response.valorTotal}`);
-    setSorvetes([]);
+        saboresIds: saboresSelecionados
+      })
+    }).then(() => alert("Pedido criado com sucesso"));
   }
 
   return (
     <div>
-      <h2>Criar Pedido</h2>
+      <h1>Criar Pedido</h1>
 
-      <h3>Novo Sorvete</h3>
+      <p><strong>Atendente ID:</strong> {atendenteId}</p>
 
-      <h4>Tamanho</h4>
+      <h2>Tamanho</h2>
       {tamanhos.map(t => (
-        <label key={t.id}>
-          <input
-            type="radio"
-            checked={tamanhoId === t.id}
-            onChange={() => setTamanhoId(t.id)}
-          />
-          {t.descricao} (R$ {t.precoTamanho})
-          <br />
-        </label>
+        <div key={t.id}>
+          <label>
+            <input
+              type="radio"
+              name="tamanho"
+              value={t.id}
+              onChange={() => setTamanhoId(t.id)}
+            />
+            {t.descricao} (R$ {t.precoTamanho})
+          </label>
+        </div>
       ))}
 
-      <h4>Sabores</h4>
+      <h2>Sabores</h2>
       {sabores.map(s => (
-        <label key={s.id}>
-          <input
-            type="checkbox"
-            checked={saboresSelecionados.includes(s.id)}
-            onChange={() => toggleSabor(s.id)}
-          />
-          {s.nome} (+ R$ {s.precoAdicional})
-          <br />
-        </label>
+        <div key={s.id}>
+          <label>
+            <input
+              type="checkbox"
+              onChange={() => toggleSabor(s.id)}
+            />
+            {s.nome} (+ R$ {s.precoAdicional})
+          </label>
+        </div>
       ))}
 
-      <button onClick={adicionarSorvete}>Adicionar Sorvete</button>
-
-      <h3>Sorvetes do Pedido</h3>
-      {sorvetes.length === 0 && <p>Nenhum sorvete adicionado</p>}
-
-      <ul>
-        {sorvetes.map((s, i) => (
-          <li key={i}>
-            <strong>{s.tamanhoDescricao}</strong><br />
-            Sabores: {s.saboresNomes.join(", ")}
-          </li>
-        ))}
-      </ul>
-
+      <br />
       <button onClick={finalizarPedido}>Finalizar Pedido</button>
-
-      {mensagem && <p>{mensagem}</p>}
     </div>
   );
 }
