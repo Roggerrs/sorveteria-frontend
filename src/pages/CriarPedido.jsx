@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
-  getTamanhos,
-  getSabores,
+  listarTamanhos,
+  listarSabores,
   criarPedido
 } from "../api/api";
 
@@ -16,8 +16,8 @@ export default function CriarPedido({ atendenteId }) {
   const [mensagem, setMensagem] = useState("");
 
   useEffect(() => {
-    getTamanhos().then(data => setTamanhos(Array.isArray(data) ? data : []));
-    getSabores().then(data => setSabores(Array.isArray(data) ? data : []));
+    listarTamanhos().then(setTamanhos);
+    listarSabores().then(setSabores);
   }, []);
 
   function toggleSabor(id) {
@@ -43,7 +43,7 @@ export default function CriarPedido({ atendenteId }) {
       ...prev,
       {
         tamanhoId,
-        tamanhoDescricao: tamanho?.descricao ?? "Desconhecido",
+        tamanhoDescricao: tamanho.descricao,
         saboresIds: saboresSelecionados,
         saboresNomes: saboresEscolhidos.map(s => s.nome)
       }
@@ -67,29 +67,22 @@ export default function CriarPedido({ atendenteId }) {
       }))
     };
 
-    try {
-      const response = await criarPedido(payload);
-      setMensagem(`Pedido criado! Total: R$ ${response.valorTotal}`);
-      setSorvetes([]);
-    } catch {
-      alert("Erro ao finalizar pedido");
-    }
+    const response = await criarPedido(payload);
+    setMensagem(`Pedido criado! Total: R$ ${response.valorTotal}`);
+    setSorvetes([]);
   }
 
   return (
     <div>
       <h2>Criar Pedido</h2>
 
-      <p><strong>Atendente ID:</strong> {atendenteId}</p>
-
       <h3>Novo Sorvete</h3>
 
       <h4>Tamanho</h4>
-      {Array.isArray(tamanhos) && tamanhos.map(t => (
+      {tamanhos.map(t => (
         <label key={t.id}>
           <input
             type="radio"
-            name="tamanho"
             checked={tamanhoId === t.id}
             onChange={() => setTamanhoId(t.id)}
           />
@@ -99,7 +92,7 @@ export default function CriarPedido({ atendenteId }) {
       ))}
 
       <h4>Sabores</h4>
-      {Array.isArray(sabores) && sabores.map(s => (
+      {sabores.map(s => (
         <label key={s.id}>
           <input
             type="checkbox"
@@ -111,26 +104,21 @@ export default function CriarPedido({ atendenteId }) {
         </label>
       ))}
 
-      <button onClick={adicionarSorvete}>
-        Adicionar Sorvete
-      </button>
+      <button onClick={adicionarSorvete}>Adicionar Sorvete</button>
 
       <h3>Sorvetes do Pedido</h3>
-
       {sorvetes.length === 0 && <p>Nenhum sorvete adicionado</p>}
 
       <ul>
-        {sorvetes.map((s, index) => (
-          <li key={index}>
+        {sorvetes.map((s, i) => (
+          <li key={i}>
             <strong>{s.tamanhoDescricao}</strong><br />
             Sabores: {s.saboresNomes.join(", ")}
           </li>
         ))}
       </ul>
 
-      <button onClick={finalizarPedido}>
-        Finalizar Pedido
-      </button>
+      <button onClick={finalizarPedido}>Finalizar Pedido</button>
 
       {mensagem && <p>{mensagem}</p>}
     </div>
