@@ -7,9 +7,7 @@ export default function ListarPedidos() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    listarPedidos()
-      .then(setPedidos)
-      .catch(() => alert("Erro ao carregar pedidos"));
+    listarPedidos().then(setPedidos);
   }, []);
 
   return (
@@ -21,7 +19,7 @@ export default function ListarPedidos() {
           <li key={p.id}>
             <button
               onClick={() => navigate(`/pedidos/${p.id}`)}
-              style={{ marginBottom: 8 }}
+              style={{ cursor: "pointer" }}
             >
               Pedido #{p.id} — Total R$ {p.valorTotal}
             </button>

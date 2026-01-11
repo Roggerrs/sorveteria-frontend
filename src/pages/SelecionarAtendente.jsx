@@ -10,8 +10,7 @@ export default function SelecionarAtendente() {
   useEffect(() => {
     fetch(`${BASE_URL}/atendentes`)
       .then(res => res.json())
-      .then(setAtendentes)
-      .catch(() => alert("Erro ao carregar atendentes"));
+      .then(setAtendentes);
   }, []);
 
   return (

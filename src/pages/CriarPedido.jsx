@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  listarTamanhos,
-  listarSabores,
-  criarPedido
-} from "../api/api.js";
+import { useParams, useNavigate } from "react-router-dom";
+import { listarTamanhos, listarSabores, criarPedido } from "../api/api.js";
 
-export default function CriarPedido({ atendenteId }) {
+export default function CriarPedido() {
+  const { atendenteId } = useParams();
   const navigate = useNavigate();
 
   const [tamanhos, setTamanhos] = useState([]);
@@ -25,9 +22,7 @@ export default function CriarPedido({ atendenteId }) {
 
   function toggleSabor(id) {
     setSaboresSelecionados(prev =>
-      prev.includes(id)
-        ? prev.filter(s => s !== id)
-        : [...prev, id]
+      prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
     );
   }
 
@@ -49,16 +44,15 @@ export default function CriarPedido({ atendenteId }) {
 
     const precoSorvete = tamanho.precoTamanho + precoSabores;
 
-    setSorvetesDoPedido(prev => [
-      ...prev,
-      {
-        tamanho,
-        sabores: saboresEscolhidos,
-        preco: precoSorvete
-      }
-    ]);
+    const sorvete = {
+      tamanho,
+      sabores: saboresEscolhidos,
+      preco: precoSorvete
+    };
 
+    setSorvetesDoPedido(prev => [...prev, sorvete]);
     setTotal(prev => prev + precoSorvete);
+
     setTamanhoId(null);
     setSaboresSelecionados([]);
   }
@@ -70,7 +64,7 @@ export default function CriarPedido({ atendenteId }) {
     }
 
     const pedido = {
-      atendenteId,
+      atendenteId: Number(atendenteId),
       sorvetes: sorvetesDoPedido.map(s => ({
         tamanhoId: s.tamanho.id,
         saboresIds: s.sabores.map(sb => sb.id)
@@ -80,7 +74,8 @@ export default function CriarPedido({ atendenteId }) {
     criarPedido(pedido)
       .then(() => {
         alert(`Pedido criado com sucesso! Total: R$ ${total}`);
-        navigate("/pedidos");
+        setSorvetesDoPedido([]);
+        setTotal(0);
       })
       .catch(() => alert("Erro ao criar pedido"));
   }
@@ -92,29 +87,31 @@ export default function CriarPedido({ atendenteId }) {
 
       <h2>Tamanho</h2>
       {tamanhos.map(t => (
-        <label key={t.id}>
-          <input
-            type="radio"
-            name="tamanho"
-            checked={tamanhoId === t.id}
-            onChange={() => setTamanhoId(t.id)}
-          />
-          {t.descricao} (R$ {t.precoTamanho})
-          <br />
-        </label>
+        <div key={t.id}>
+          <label>
+            <input
+              type="radio"
+              name="tamanho"
+              checked={tamanhoId === t.id}
+              onChange={() => setTamanhoId(t.id)}
+            />
+            {t.descricao} (R$ {t.precoTamanho})
+          </label>
+        </div>
       ))}
 
       <h2>Sabores</h2>
       {sabores.map(s => (
-        <label key={s.id}>
-          <input
-            type="checkbox"
-            checked={saboresSelecionados.includes(s.id)}
-            onChange={() => toggleSabor(s.id)}
-          />
-          {s.nome} (+ R$ {s.precoAdicional})
-          <br />
-        </label>
+        <div key={s.id}>
+          <label>
+            <input
+              type="checkbox"
+              checked={saboresSelecionados.includes(s.id)}
+              onChange={() => toggleSabor(s.id)}
+            />
+            {s.nome} (+ R$ {s.precoAdicional})
+          </label>
+        </div>
       ))}
 
       <br />
@@ -133,6 +130,13 @@ export default function CriarPedido({ atendenteId }) {
       <h3>Total: R$ {total}</h3>
 
       <button onClick={finalizarPedido}>Finalizar Pedido</button>
+
+      <br /><br />
+
+      {/* 🔹 BOTÃO QUE VOCÊ SENTIU FALTA */}
+      <button onClick={() => navigate("/pedidos")}>
+        Ver pedidos
+      </button>
     </div>
   );
 }
