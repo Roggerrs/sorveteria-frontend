@@ -22,7 +22,9 @@ export default function CriarPedido() {
 
   function toggleSabor(id) {
     setSaboresSelecionados(prev =>
-      prev.includes(id) ? prev.filter(s => s !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter(s => s !== id)
+        : [...prev, id]
     );
   }
 
@@ -55,6 +57,17 @@ export default function CriarPedido() {
 
     setTamanhoId(null);
     setSaboresSelecionados([]);
+  }
+
+  // ✅ AQUI ESTÁ A MELHORIA
+  function removerSorvete(index) {
+    const sorveteRemovido = sorvetesDoPedido[index];
+
+    setSorvetesDoPedido(prev =>
+      prev.filter((_, i) => i !== index)
+    );
+
+    setTotal(prev => prev - sorveteRemovido.preco);
   }
 
   function finalizarPedido() {
@@ -122,6 +135,12 @@ export default function CriarPedido() {
 
       {sorvetesDoPedido.map((s, i) => (
         <div key={i}>
+          <button
+            onClick={() => removerSorvete(i)}
+            style={{ marginRight: "8px" }}
+          >
+            X
+          </button>
           <strong>{s.tamanho.descricao}</strong> —{" "}
           {s.sabores.map(sb => sb.nome).join(", ")} — R$ {s.preco}
         </div>
@@ -133,7 +152,6 @@ export default function CriarPedido() {
 
       <br /><br />
 
-      {/* 🔹 BOTÃO QUE VOCÊ SENTIU FALTA */}
       <button onClick={() => navigate("/pedidos")}>
         Ver pedidos
       </button>
