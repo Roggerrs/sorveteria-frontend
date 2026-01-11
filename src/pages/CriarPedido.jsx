@@ -15,6 +15,10 @@ export default function CriarPedido() {
   const [sorvetesDoPedido, setSorvetesDoPedido] = useState([]);
   const [total, setTotal] = useState(0);
 
+  // 🔹 NOVOS STATES (VALIDAÇÕES VISUAIS)
+  const [erro, setErro] = useState(null);
+  const [erroApi, setErroApi] = useState(null);
+
   useEffect(() => {
     listarTamanhos().then(setTamanhos);
     listarSabores().then(setSabores);
@@ -30,7 +34,7 @@ export default function CriarPedido() {
 
   function adicionarSorvete() {
     if (!tamanhoId || saboresSelecionados.length === 0) {
-      alert("Selecione tamanho e sabores");
+      setErro("Selecione um tamanho e ao menos um sabor");
       return;
     }
 
@@ -55,11 +59,13 @@ export default function CriarPedido() {
     setSorvetesDoPedido(prev => [...prev, sorvete]);
     setTotal(prev => prev + precoSorvete);
 
+    // limpa seleção e erros
     setTamanhoId(null);
     setSaboresSelecionados([]);
+    setErro(null);
   }
 
-  // ✅ AQUI ESTÁ A MELHORIA
+  // 🔹 REMOVER SORVETE (MELHORIA DA ETAPA 3)
   function removerSorvete(index) {
     const sorveteRemovido = sorvetesDoPedido[index];
 
@@ -71,10 +77,7 @@ export default function CriarPedido() {
   }
 
   function finalizarPedido() {
-    if (sorvetesDoPedido.length === 0) {
-      alert("Adicione ao menos um sorvete");
-      return;
-    }
+    if (sorvetesDoPedido.length === 0) return;
 
     const pedido = {
       atendenteId: Number(atendenteId),
@@ -86,11 +89,14 @@ export default function CriarPedido() {
 
     criarPedido(pedido)
       .then(() => {
+        setErroApi(null);
         alert(`Pedido criado com sucesso! Total: R$ ${total}`);
         setSorvetesDoPedido([]);
         setTotal(0);
       })
-      .catch(() => alert("Erro ao criar pedido"));
+      .catch(() => {
+        setErroApi("Erro ao criar pedido. Verifique o servidor ou os dados.");
+      });
   }
 
   return (
@@ -130,8 +136,14 @@ export default function CriarPedido() {
       <br />
       <button onClick={adicionarSorvete}>Adicionar Sorvete</button>
 
+      {/* 🔹 ERRO VISUAL (SEM ALERT) */}
+      {erro && <p style={{ color: "red" }}>{erro}</p>}
+
       <h2>Sorvetes do Pedido</h2>
-      {sorvetesDoPedido.length === 0 && <p>Nenhum sorvete adicionado</p>}
+
+      {sorvetesDoPedido.length === 0 && (
+        <p>Nenhum sorvete adicionado</p>
+      )}
 
       {sorvetesDoPedido.map((s, i) => (
         <div key={i}>
@@ -148,7 +160,19 @@ export default function CriarPedido() {
 
       <h3>Total: R$ {total}</h3>
 
-      <button onClick={finalizarPedido}>Finalizar Pedido</button>
+      <button
+        onClick={finalizarPedido}
+        disabled={sorvetesDoPedido.length === 0}
+        style={{
+          opacity: sorvetesDoPedido.length === 0 ? 0.5 : 1,
+          cursor: sorvetesDoPedido.length === 0 ? "not-allowed" : "pointer"
+        }}
+      >
+        Finalizar Pedido
+      </button>
+
+      {/* 🔹 ERRO DA API */}
+      {erroApi && <p style={{ color: "red" }}>{erroApi}</p>}
 
       <br /><br />
 
