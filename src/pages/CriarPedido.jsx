@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { listarTamanhos, listarSabores, criarPedido } from "../api/api.js";
+import { useNavigate } from "react-router-dom";
+import {
+  listarTamanhos,
+  listarSabores,
+  criarPedido
+} from "../api/api.js";
 
 export default function CriarPedido({ atendenteId }) {
+  const navigate = useNavigate();
+
   const [tamanhos, setTamanhos] = useState([]);
   const [sabores, setSabores] = useState([]);
 
@@ -42,15 +49,16 @@ export default function CriarPedido({ atendenteId }) {
 
     const precoSorvete = tamanho.precoTamanho + precoSabores;
 
-    const sorvete = {
-      tamanho,
-      sabores: saboresEscolhidos,
-      preco: precoSorvete
-    };
+    setSorvetesDoPedido(prev => [
+      ...prev,
+      {
+        tamanho,
+        sabores: saboresEscolhidos,
+        preco: precoSorvete
+      }
+    ]);
 
-    setSorvetesDoPedido(prev => [...prev, sorvete]);
     setTotal(prev => prev + precoSorvete);
-
     setTamanhoId(null);
     setSaboresSelecionados([]);
   }
@@ -69,13 +77,10 @@ export default function CriarPedido({ atendenteId }) {
       }))
     };
 
-    console.log("ENVIANDO PARA O BACK:", pedido);
-
     criarPedido(pedido)
       .then(() => {
         alert(`Pedido criado com sucesso! Total: R$ ${total}`);
-        setSorvetesDoPedido([]);
-        setTotal(0);
+        navigate("/pedidos");
       })
       .catch(() => alert("Erro ao criar pedido"));
   }
@@ -87,31 +92,29 @@ export default function CriarPedido({ atendenteId }) {
 
       <h2>Tamanho</h2>
       {tamanhos.map(t => (
-        <div key={t.id}>
-          <label>
-            <input
-              type="radio"
-              name="tamanho"
-              checked={tamanhoId === t.id}
-              onChange={() => setTamanhoId(t.id)}
-            />
-            {t.descricao} (R$ {t.precoTamanho})
-          </label>
-        </div>
+        <label key={t.id}>
+          <input
+            type="radio"
+            name="tamanho"
+            checked={tamanhoId === t.id}
+            onChange={() => setTamanhoId(t.id)}
+          />
+          {t.descricao} (R$ {t.precoTamanho})
+          <br />
+        </label>
       ))}
 
       <h2>Sabores</h2>
       {sabores.map(s => (
-        <div key={s.id}>
-          <label>
-            <input
-              type="checkbox"
-              checked={saboresSelecionados.includes(s.id)}
-              onChange={() => toggleSabor(s.id)}
-            />
-            {s.nome} (+ R$ {s.precoAdicional})
-          </label>
-        </div>
+        <label key={s.id}>
+          <input
+            type="checkbox"
+            checked={saboresSelecionados.includes(s.id)}
+            onChange={() => toggleSabor(s.id)}
+          />
+          {s.nome} (+ R$ {s.precoAdicional})
+          <br />
+        </label>
       ))}
 
       <br />

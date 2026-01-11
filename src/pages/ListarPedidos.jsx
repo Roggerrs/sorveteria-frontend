@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-
-const BASE_URL = "http://localhost:8080";
+import { useNavigate } from "react-router-dom";
+import { listarPedidos } from "../api/api.js";
 
 export default function ListarPedidos() {
   const [pedidos, setPedidos] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`${BASE_URL}/pedidos`)
-      .then(res => res.json())
-      .then(setPedidos);
+    listarPedidos()
+      .then(setPedidos)
+      .catch(() => alert("Erro ao carregar pedidos"));
   }, []);
 
   return (
@@ -18,10 +19,19 @@ export default function ListarPedidos() {
       <ul>
         {pedidos.map(p => (
           <li key={p.id}>
-            Pedido #{p.id} — Total R$ {p.valorTotal}
+            <button
+              onClick={() => navigate(`/pedidos/${p.id}`)}
+              style={{ marginBottom: 8 }}
+            >
+              Pedido #{p.id} — Total R$ {p.valorTotal}
+            </button>
           </li>
         ))}
       </ul>
+
+      <button onClick={() => navigate("/")}>
+        Novo pedido
+      </button>
     </div>
   );
 }

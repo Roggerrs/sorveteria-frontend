@@ -1,46 +1,45 @@
-import React, { useState } from "react";
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
 import SelecionarAtendente from "./pages/SelecionarAtendente";
 import CriarPedido from "./pages/CriarPedido";
 import ListarPedidos from "./pages/ListarPedidos";
+import PedidoDetalhe from "./pages/PedidoDetalhe";
 
 export default function App() {
-  const [tela, setTela] = useState("selecionar"); 
-  const [atendenteId, setAtendenteId] = useState(null);
-
-  function selecionarAtendente(id) {
-    setAtendenteId(id);
-    setTela("criar");
-  }
-
-  function voltarParaCriar() {
-    setTela("criar");
-  }
-
-  function irParaListagem() {
-    setTela("listar");
-  }
-
   return (
-    <div style={{ padding: "20px" }}>
-      {tela === "selecionar" && (
-        <SelecionarAtendente onSelecionar={selecionarAtendente} />
-      )}
+    <BrowserRouter>
+      <div style={{ padding: "20px" }}>
+        <Routes>
+          {/* Tela inicial */}
+          <Route path="/" element={<SelecionarAtendente />} />
 
-      {tela === "criar" && (
-        <>
-          <CriarPedido atendenteId={atendenteId} />
-          <br />
-          <button onClick={irParaListagem}>Ver pedidos</button>
-        </>
-      )}
+          {/* Criar pedido */}
+          <Route
+            path="/criar/:atendenteId"
+            element={<CriarPedidoWrapper />}
+          />
 
-      {tela === "listar" && (
-        <>
-          <ListarPedidos />
-          <br />
-          <button onClick={voltarParaCriar}>Novo pedido</button>
-        </>
-      )}
-    </div>
+          {/* Listagem */}
+          <Route path="/pedidos" element={<ListarPedidos />} />
+
+          {/* 🔥 DETALHE DO PEDIDO (MELHORIA AQUI) */}
+          <Route path="/pedidos/:id" element={<PedidoDetalhe />} />
+
+          {/* fallback */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
+}
+
+/* ============================= */
+/* Wrapper para pegar atendente */
+/* ============================= */
+import { useParams } from "react-router-dom";
+
+function CriarPedidoWrapper() {
+  const { atendenteId } = useParams();
+  return <CriarPedido atendenteId={Number(atendenteId)} />;
 }

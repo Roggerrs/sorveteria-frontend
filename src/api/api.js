@@ -1,20 +1,24 @@
 const BASE_URL = "http://localhost:8080";
 
+/* ===================== ATENDENTE ===================== */
 export async function listarAtendentes() {
   const r = await fetch(`${BASE_URL}/atendentes`);
   return r.json();
 }
 
+/* ===================== TAMANHO ===================== */
 export async function listarTamanhos() {
   const r = await fetch(`${BASE_URL}/tamanhos`);
   return r.json();
 }
 
+/* ===================== SABOR ===================== */
 export async function listarSabores() {
   const r = await fetch(`${BASE_URL}/sabores`);
   return r.json();
 }
 
+/* ===================== PEDIDOS ===================== */
 export async function criarPedido(dados) {
   const r = await fetch(`${BASE_URL}/pedidos`, {
     method: "POST",
@@ -34,7 +38,13 @@ export async function listarPedidos() {
   return r.json();
 }
 
-export async function buscarPedidoPorId(id) {
-  const r = await fetch(`${BASE_URL}/pedidos/${id}`);
+/* 🔹 NOVO — DETALHE DO PEDIDO */
+export async function buscarPedidoDetalhe(idPedido) {
+  const r = await fetch(`${BASE_URL}/pedidos/${idPedido}`);
+
+  if (!r.ok) {
+    throw new Error("Erro ao buscar detalhe do pedido");
+  }
+
   return r.json();
 }

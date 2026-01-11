@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "http://localhost:8080";
 
-export default function SelecionarAtendente({ onSelecionar }) {
+export default function SelecionarAtendente() {
   const [atendentes, setAtendentes] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${BASE_URL}/atendentes`)
       .then(res => res.json())
-      .then(setAtendentes);
+      .then(setAtendentes)
+      .catch(() => alert("Erro ao carregar atendentes"));
   }, []);
 
   return (
@@ -19,7 +22,7 @@ export default function SelecionarAtendente({ onSelecionar }) {
         <button
           key={a.id}
           style={{ marginRight: 10, padding: "10px 20px" }}
-          onClick={() => onSelecionar(a.id)}
+          onClick={() => navigate(`/criar/${a.id}`)}
         >
           {a.nome}
         </button>
