@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-
-const BASE_URL = "http://localhost:8080";
+import { listarTamanhos, listarSabores, criarPedido } from "../api/api.js";
 
 export default function CriarPedido({ atendenteId }) {
   const [tamanhos, setTamanhos] = useState([]);
@@ -13,8 +12,8 @@ export default function CriarPedido({ atendenteId }) {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/tamanhos`).then(r => r.json()).then(setTamanhos);
-    fetch(`${BASE_URL}/sabores`).then(r => r.json()).then(setSabores);
+    listarTamanhos().then(setTamanhos);
+    listarSabores().then(setSabores);
   }, []);
 
   function toggleSabor(id) {
@@ -57,17 +56,28 @@ export default function CriarPedido({ atendenteId }) {
   }
 
   function finalizarPedido() {
-    fetch(`${BASE_URL}/pedidos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        atendenteId,
-        tamanhoId: sorvetesDoPedido[0]?.tamanho.id,
-        saboresIds: sorvetesDoPedido.flatMap(s =>
-          s.sabores.map(sb => sb.id)
-        )
+    if (sorvetesDoPedido.length === 0) {
+      alert("Adicione ao menos um sorvete");
+      return;
+    }
+
+    const pedido = {
+      atendenteId,
+      sorvetes: sorvetesDoPedido.map(s => ({
+        tamanhoId: s.tamanho.id,
+        saboresIds: s.sabores.map(sb => sb.id)
+      }))
+    };
+
+    console.log("ENVIANDO PARA O BACK:", pedido);
+
+    criarPedido(pedido)
+      .then(() => {
+        alert(`Pedido criado com sucesso! Total: R$ ${total}`);
+        setSorvetesDoPedido([]);
+        setTotal(0);
       })
-    }).then(() => alert(`Pedido criado! Total: R$ ${total}`));
+      .catch(() => alert("Erro ao criar pedido"));
   }
 
   return (
