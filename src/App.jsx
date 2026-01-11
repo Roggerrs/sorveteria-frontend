@@ -1,10 +1,11 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 
 import SelecionarAtendente from "./pages/SelecionarAtendente";
 import CriarPedido from "./pages/CriarPedido";
 import ListarPedidos from "./pages/ListarPedidos";
 import PedidoDetalhe from "./pages/PedidoDetalhe";
+import Relatorios from "./pages/Relatorios"; // 🆕 IMPORT
 
 export default function App() {
   return (
@@ -23,8 +24,11 @@ export default function App() {
           {/* Listagem */}
           <Route path="/pedidos" element={<ListarPedidos />} />
 
-          {/* 🔥 DETALHE DO PEDIDO (MELHORIA AQUI) */}
+          {/* Detalhe do pedido */}
           <Route path="/pedidos/:id" element={<PedidoDetalhe />} />
+
+          {/* 🆕 RELATÓRIOS */}
+          <Route path="/relatorios" element={<Relatorios />} />
 
           {/* fallback */}
           <Route path="*" element={<Navigate to="/" />} />
@@ -37,8 +41,6 @@ export default function App() {
 /* ============================= */
 /* Wrapper para pegar atendente */
 /* ============================= */
-import { useParams } from "react-router-dom";
-
 function CriarPedidoWrapper() {
   const { atendenteId } = useParams();
   return <CriarPedido atendenteId={Number(atendenteId)} />;

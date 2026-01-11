@@ -1,50 +1,82 @@
 const BASE_URL = "http://localhost:8080";
 
-/* ===================== ATENDENTE ===================== */
+// =========================
+// ATENDENTES
+// =========================
 export async function listarAtendentes() {
-  const r = await fetch(`${BASE_URL}/atendentes`);
-  return r.json();
+  const res = await fetch(`${BASE_URL}/atendentes`);
+  if (!res.ok) throw new Error("Erro ao listar atendentes");
+  return res.json();
 }
 
-/* ===================== TAMANHO ===================== */
+// =========================
+// TAMANHOS
+// =========================
 export async function listarTamanhos() {
-  const r = await fetch(`${BASE_URL}/tamanhos`);
-  return r.json();
+  const res = await fetch(`${BASE_URL}/tamanhos`);
+  if (!res.ok) throw new Error("Erro ao listar tamanhos");
+  return res.json();
 }
 
-/* ===================== SABOR ===================== */
+// =========================
+// SABORES
+// =========================
 export async function listarSabores() {
-  const r = await fetch(`${BASE_URL}/sabores`);
-  return r.json();
+  const res = await fetch(`${BASE_URL}/sabores`);
+  if (!res.ok) throw new Error("Erro ao listar sabores");
+  return res.json();
 }
 
-/* ===================== PEDIDOS ===================== */
+// =========================
+// PEDIDOS
+// =========================
 export async function criarPedido(dados) {
-  const r = await fetch(`${BASE_URL}/pedidos`, {
+  const res = await fetch(`${BASE_URL}/pedidos`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(dados),
   });
 
-  if (!r.ok) {
+  if (!res.ok) {
     throw new Error("Erro ao criar pedido");
   }
-
-  return r.json();
 }
 
 export async function listarPedidos() {
-  const r = await fetch(`${BASE_URL}/pedidos`);
-  return r.json();
+  const res = await fetch(`${BASE_URL}/pedidos`);
+  if (!res.ok) throw new Error("Erro ao listar pedidos");
+  return res.json();
 }
 
-/* 🔹 NOVO — DETALHE DO PEDIDO */
-export async function buscarPedidoDetalhe(idPedido) {
-  const r = await fetch(`${BASE_URL}/pedidos/${idPedido}`);
+export async function buscarPedidoDetalhe(id) {
+  const res = await fetch(`${BASE_URL}/pedidos/${id}`);
+  if (!res.ok) throw new Error("Erro ao buscar pedido");
+  return res.json();
+}
 
-  if (!r.ok) {
-    throw new Error("Erro ao buscar detalhe do pedido");
-  }
+// =========================
+// RELATÓRIOS (🆕)
+// =========================
+export async function totalFaturado() {
+  const res = await fetch(`${BASE_URL}/relatorios/total-faturado`);
+  if (!res.ok) throw new Error("Erro ao buscar total faturado");
+  return res.json();
+}
 
-  return r.json();
+export async function totalPorAtendente() {
+  const res = await fetch(`${BASE_URL}/relatorios/por-atendente`);
+  if (!res.ok) throw new Error("Erro ao buscar total por atendente");
+  return res.json();
+}
+
+export async function saboresMaisVendidos() {
+  const res = await fetch(`${BASE_URL}/relatorios/sabores-mais-vendidos`);
+  if (!res.ok) throw new Error("Erro ao buscar sabores mais vendidos");
+  return res.json();
+}
+
+export async function tamanhosMaisVendidos() {
+  const res = await fetch(`${BASE_URL}/relatorios/tamanhos-mais-vendidos`);
+  if (!res.ok) throw new Error("Erro ao buscar tamanhos mais vendidos");
+  return res.json();
 }
