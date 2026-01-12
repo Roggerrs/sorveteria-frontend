@@ -2,6 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { listarTamanhos, listarSabores, criarPedido } from "../api/api.js";
 
+import SaborItem from "../components/SaborItem";
+
+import chocolateImg from "../assets/sabores/chocolate.png";
+import morangoImg from "../assets/sabores/morango.png";
+import baunilhaImg from "../assets/sabores/baunilha.png";
+
+import TamanhoItem from "../components/TamanhoItem";
+import sorveteImg from "../assets/tamanhos/sorvete.png";
+
+
 export default function CriarPedido() {
   const { atendenteId } = useParams();
   const navigate = useNavigate();
@@ -15,7 +25,6 @@ export default function CriarPedido() {
   const [sorvetesDoPedido, setSorvetesDoPedido] = useState([]);
   const [total, setTotal] = useState(0);
 
-  // 🔹 NOVOS STATES (VALIDAÇÕES VISUAIS)
   const [erro, setErro] = useState(null);
   const [erroApi, setErroApi] = useState(null);
 
@@ -23,6 +32,12 @@ export default function CriarPedido() {
     listarTamanhos().then(setTamanhos);
     listarSabores().then(setSabores);
   }, []);
+
+  const imagemPorSabor = {
+    Chocolate: chocolateImg,
+    Morango: morangoImg,
+    Baunilha: baunilhaImg,
+  };
 
   function toggleSabor(id) {
     setSaboresSelecionados(prev =>
@@ -53,19 +68,17 @@ export default function CriarPedido() {
     const sorvete = {
       tamanho,
       sabores: saboresEscolhidos,
-      preco: precoSorvete
+      preco: precoSorvete,
     };
 
     setSorvetesDoPedido(prev => [...prev, sorvete]);
     setTotal(prev => prev + precoSorvete);
 
-    // limpa seleção e erros
     setTamanhoId(null);
     setSaboresSelecionados([]);
     setErro(null);
   }
 
-  // 🔹 REMOVER SORVETE (MELHORIA DA ETAPA 3)
   function removerSorvete(index) {
     const sorveteRemovido = sorvetesDoPedido[index];
 
@@ -83,8 +96,8 @@ export default function CriarPedido() {
       atendenteId: Number(atendenteId),
       sorvetes: sorvetesDoPedido.map(s => ({
         tamanhoId: s.tamanho.id,
-        saboresIds: s.sabores.map(sb => sb.id)
-      }))
+        saboresIds: s.sabores.map(sb => sb.id),
+      })),
     };
 
     criarPedido(pedido)
@@ -95,7 +108,7 @@ export default function CriarPedido() {
         setTotal(0);
       })
       .catch(() => {
-        setErroApi("Erro ao criar pedido. Verifique o servidor ou os dados.");
+        setErroApi("Erro ao criar pedido. Verifique o servidor.");
       });
   }
 
@@ -104,39 +117,45 @@ export default function CriarPedido() {
       <h1>Criar Pedido</h1>
       <p><strong>Atendente ID:</strong> {atendenteId}</p>
 
-      <h2>Tamanho</h2>
-      {tamanhos.map(t => (
-        <div key={t.id}>
-          <label>
-            <input
-              type="radio"
-              name="tamanho"
-              checked={tamanhoId === t.id}
-              onChange={() => setTamanhoId(t.id)}
-            />
-            {t.descricao} (R$ {t.precoTamanho})
-          </label>
-        </div>
-      ))}
+<h2>Tamanho</h2>
+
+{tamanhos.map(t => (
+  <TamanhoItem
+    key={t.id}
+    imagem={sorveteImg}
+    nome={t.descricao}
+    preco={t.precoTamanho}
+    tamanho={
+      t.descricao.toLowerCase().includes("pequeno")
+        ? "pequeno"
+        : t.descricao.toLowerCase().includes("médio")
+        ? "medio"
+        : "grande"
+    }
+    selected={tamanhoId === t.id}
+    onSelect={() => setTamanhoId(t.id)}
+  />
+))}
+
 
       <h2>Sabores</h2>
       {sabores.map(s => (
-        <div key={s.id}>
-          <label>
-            <input
-              type="checkbox"
-              checked={saboresSelecionados.includes(s.id)}
-              onChange={() => toggleSabor(s.id)}
-            />
-            {s.nome} (+ R$ {s.precoAdicional})
-          </label>
-        </div>
+        <SaborItem
+          key={s.id}
+          imagem={imagemPorSabor[s.nome]}
+          nome={s.nome}
+          preco={s.precoAdicional}
+          checked={saboresSelecionados.includes(s.id)}
+          onToggle={() => toggleSabor(s.id)}
+        />
       ))}
 
       <br />
-      <button onClick={adicionarSorvete}>Adicionar Sorvete</button>
 
-      {/* 🔹 ERRO VISUAL (SEM ALERT) */}
+      <button onClick={adicionarSorvete}>
+        Adicionar Sorvete
+      </button>
+
       {erro && <p style={{ color: "red" }}>{erro}</p>}
 
       <h2>Sorvetes do Pedido</h2>
@@ -146,13 +165,8 @@ export default function CriarPedido() {
       )}
 
       {sorvetesDoPedido.map((s, i) => (
-        <div key={i}>
-          <button
-            onClick={() => removerSorvete(i)}
-            style={{ marginRight: "8px" }}
-          >
-            X
-          </button>
+        <div key={i} style={{ marginBottom: "6px" }}>
+          <button onClick={() => removerSorvete(i)}>X</button>{" "}
           <strong>{s.tamanho.descricao}</strong> —{" "}
           {s.sabores.map(sb => sb.nome).join(", ")} — R$ {s.preco}
         </div>
@@ -163,15 +177,10 @@ export default function CriarPedido() {
       <button
         onClick={finalizarPedido}
         disabled={sorvetesDoPedido.length === 0}
-        style={{
-          opacity: sorvetesDoPedido.length === 0 ? 0.5 : 1,
-          cursor: sorvetesDoPedido.length === 0 ? "not-allowed" : "pointer"
-        }}
       >
         Finalizar Pedido
       </button>
 
-      {/* 🔹 ERRO DA API */}
       {erroApi && <p style={{ color: "red" }}>{erroApi}</p>}
 
       <br /><br />
