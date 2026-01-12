@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+
+
 import {
   totalFaturado,
   totalPorAtendente,
@@ -14,67 +16,54 @@ export default function Relatorios() {
   const [porAtendente, setPorAtendente] = useState([]);
   const [sabores, setSabores] = useState([]);
   const [tamanhos, setTamanhos] = useState([]);
-  const [erro, setErro] = useState(null);
 
   useEffect(() => {
     async function carregar() {
-      try {
-        setTotal(await totalFaturado());
-        setPorAtendente(await totalPorAtendente());
-        setSabores(await saboresMaisVendidos());
-        setTamanhos(await tamanhosMaisVendidos());
-      } catch (e) {
-        setErro("Erro ao carregar relatórios");
-      }
+      setTotal(await totalFaturado());
+      setPorAtendente(await totalPorAtendente());
+      setSabores(await saboresMaisVendidos());
+      setTamanhos(await tamanhosMaisVendidos());
     }
-
     carregar();
   }, []);
 
   return (
-    <div>
+    <div className="container">
       <h1>Relatórios</h1>
-
-      {erro && <p style={{ color: "red" }}>{erro}</p>}
 
       {total && (
         <>
           <h2>Total Faturado</h2>
-          <p><strong>R$ {total.total}</strong></p>
+          <div className="card">R$ {total.total}</div>
         </>
       )}
 
       <h2>Total por Atendente</h2>
-      <ul>
-        {porAtendente.map((a, i) => (
-          <li key={i}>
-            {a.atendente} — R$ {a.total}
-          </li>
-        ))}
-      </ul>
+      {porAtendente.map((a, i) => (
+        <div key={i} className="card">
+          {a.atendente} — R$ {a.total}
+        </div>
+      ))}
 
       <h2>Sabores Mais Vendidos</h2>
-      <ul>
-        {sabores.map((s, i) => (
-          <li key={i}>
-            {s.nome} — {s.total}
-          </li>
-        ))}
-      </ul>
+      {sabores.map((s, i) => (
+        <div key={i} className="card">
+          {s.nome} — {s.total}
+        </div>
+      ))}
 
       <h2>Tamanhos Mais Vendidos</h2>
-      <ul>
-        {tamanhos.map((t, i) => (
-          <li key={i}>
-            {t.descricao} — {t.total}
-          </li>
-        ))}
-      </ul>
+      {tamanhos.map((t, i) => (
+        <div key={i} className="card">
+          {t.descricao} — {t.total}
+        </div>
+      ))}
 
-      <br />
-      <button onClick={() => navigate("/pedidos")}>
-        Voltar para pedidos
-      </button>
+      <div className="actions">
+        <button className="secondary" onClick={() => navigate("/pedidos")}>
+          Voltar para pedidos
+        </button>
+      </div>
     </div>
   );
 }

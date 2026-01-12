@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+
+
+
 import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "http://localhost:8080";
@@ -14,18 +17,16 @@ export default function SelecionarAtendente() {
   }, []);
 
   return (
-    <div>
+    <div className="container">
       <h1>Selecione o atendente</h1>
 
-      {atendentes.map(a => (
-        <button
-          key={a.id}
-          style={{ marginRight: 10, padding: "10px 20px" }}
-          onClick={() => navigate(`/criar/${a.id}`)}
-        >
-          {a.nome}
-        </button>
-      ))}
+      <div className="actions">
+        {atendentes.map(a => (
+          <button key={a.id} onClick={() => navigate(`/criar/${a.id}`)}>
+            {a.nome}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
