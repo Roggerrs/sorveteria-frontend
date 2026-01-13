@@ -20,13 +20,15 @@ export default function TamanhoItem({
       sx={{
         display: "flex",
         alignItems: "center",
-        gap: "16px",
+        gap: "14px",
         padding: "14px",
         borderRadius: "10px",
         marginBottom: "10px",
         cursor: "pointer",
-        backgroundColor: selected ? "#fff3e0" : "#ffffff",
+
+        backgroundColor: "#ffffff",
         border: selected ? "2px solid #ff9800" : "1px solid #ddd",
+
         transition: "all 0.2s ease",
       }}
     >
@@ -34,7 +36,7 @@ export default function TamanhoItem({
         type="radio"
         checked={selected}
         readOnly
-        style={{ transform: "scale(1.3)" }}
+        style={{ transform: "scale(1.2)" }}
       />
 
       <img
@@ -44,16 +46,15 @@ export default function TamanhoItem({
         height={tamanhoImagem}
       />
 
-     <Typography
-  sx={{
-    fontWeight: 600,
-    color: "#222",        // ← texto escuro
-    fontSize: "1.1rem"
-  }}
->
-  {nome} (R$ {preco})
-</Typography>
-
+      <Typography
+        sx={{
+          fontWeight: 600,
+          color: "#222", // 👈 TEXTO VISÍVEL
+          fontSize: "1rem"
+        }}
+      >
+        {nome} (R$ {preco})
+      </Typography>
     </Box>
   );
 }

@@ -14,37 +14,34 @@ export default function SaborItem({
       sx={{
         display: "flex",
         alignItems: "center",
-        gap: "16px",
+        gap: "14px",
         padding: "14px",
         borderRadius: "10px",
-        marginBottom: "12px",
+        marginBottom: "10px",
         cursor: "pointer",
 
-        backgroundColor: checked ? "#fff3e0" : "#ffffff",
+        backgroundColor: "#ffffff",
         border: checked ? "2px solid #ff9800" : "1px solid #ddd",
-
-        transition: "all 0.2s ease",
       }}
     >
       <input
         type="checkbox"
         checked={checked}
         readOnly
-        style={{ transform: "scale(1.4)" }}
+        style={{ transform: "scale(1.2)" }}
       />
 
       <img
         src={imagem}
         alt={nome}
-        width={48}
-        height={48}
+        width={32}
+        height={32}
       />
 
       <Typography
         sx={{
-          color: "#222",          // 🔹 COR ESCURA (resolve o problema)
-          fontWeight: 600,        // 🔹 MAIS LEGÍVEL
-          fontSize: "1.1rem"
+          fontWeight: 600,
+          color: "#222" // 👈 TEXTO VISÍVEL
         }}
       >
         {nome} (+ R$ {preco})
