@@ -1,177 +1,229 @@
 
+---
 
-# 📦 README — Frontend
-
-👉 `sorveteria-frontend`
-
-```markdown
 # 🍦 Sistema de Sorveteria — Frontend
 
 Frontend do sistema de sorveteria desenvolvido em **React**, consumindo uma **API REST em Spring Boot**.
 
-A interface foi construída sem frameworks CSS, utilizando apenas **CSS puro**, com foco em organização, legibilidade e identidade visual. O layout foi pensado para sistemas administrativos com navegação simples e intuitiva.
+A interface foi construída com **React + Material UI (MUI)**, utilizando **componentes responsivos** e **tema escuro**, com foco em **usabilidade mobile-first**, organização visual e regras de negócio claras.
+
+O sistema simula o fluxo real de uma sorveteria: seleção de atendente, montagem de pedidos com múltiplos sorvetes, cálculo automático de valores e geração de relatórios.
 
 ---
 
-## 📢 Tags / Stack
+## 📢 Stack / Tecnologias
 
-`React` `JavaScript` `ES6+` `Vite`  
-`React Router DOM` `CSS puro` `Flexbox`  
-`API REST` `Frontend Developer` `Git` `GitHub`
+`React` `JavaScript (ES6+)` `Vite`
+`Material UI (MUI)` `Responsive Design`
+`React Router DOM`
+`API REST` `Git` `GitHub`
 
 ---
 
 ## 🧠 Competências Aplicadas
 
-Neste frontend foram aplicados conhecimentos em:
+Neste projeto foram aplicados conhecimentos em:
 
-- Criação de interfaces com **React**
-- Estruturação de projeto com **Vite**
-- Navegação entre telas com **React Router DOM**
-- **Consumo de API REST** (fetch + async/await)
-- Organização de código por páginas (components/pages)
-- Comunicação com backend em Spring Boot
-- Estilização com **CSS puro**
-- Layout com **Flexbox**
-- Tratamento de estados com **React Hooks**
+* Criação de interfaces modernas com **React**
+* Organização de projeto com **Vite**
+* Navegação entre telas com **React Router DOM**
+* **Consumo de API REST** (fetch + async/await)
+* Gerenciamento de estado com **React Hooks**
+* Componentização (pages / components)
+* **Cálculo de regras de negócio no frontend**
+* Integração completa com backend em **Spring Boot**
+* UI responsiva com **Material UI**
+* Layout **mobile-first**
+* Boas práticas de organização e legibilidade de código
 
 ---
 
 ## 🎯 Objetivo do Frontend
 
-Fornecer uma interface simples, funcional e agradável para:
+Fornecer uma interface funcional e intuitiva para:
 
-- Seleção do atendente para iniciar um pedido
-- Escolha de tamanho e sabores de sorvete
-- Montagem e visualização de pedidos
-- Navegação entre telas
-- Consulta de relatórios de vendas
-- Integração com backend sem frameworks CSS externos
+* Selecionar o atendente responsável pelo pedido
+* Criar pedidos com **múltiplos sorvetes**
+* Escolher **tamanho e sabores**
+* Calcular automaticamente valores parciais e total
+* Remover sorvetes antes de finalizar o pedido
+* Listar pedidos realizados
+* Visualizar detalhes de cada pedido
+* Exibir relatórios de vendas
+
+---
+
+## 📱 Responsividade (IMPORTANTE)
+
+✔ Interface **totalmente responsiva**
+✔ Desenvolvida com foco em **mobile-first**
+✔ Funciona corretamente em:
+
+* Celulares
+* Tablets
+* Desktop
+
+Componentes se adaptam automaticamente ao tamanho da tela.
 
 ---
 
 ## 📂 Estrutura do Projeto
 
 ```
-```
 src
 ├─ api
-│   └─ api.js                     # funções para chamar a API backend
+│  └─ api.js                  # Comunicação com backend
+├─ components
+│  ├─ TamanhoItem.jsx         # Componente de seleção de tamanho
+│  └─ SaborItem.jsx           # Componente de seleção de sabor
 ├─ pages
-│   ├─ SelecionarAtendente.jsx    # tela inicial
-│   ├─ CriarPedido.jsx            # criação de pedido
-│   ├─ CriarSorvete.jsx           # adicionar sorvete ao pedido
-│   ├─ ListarPedidos.jsx          # listagem de pedidos
-│   ├─ PedidoDetalhe.jsx          # detalhes de um pedido
-│   └─ Relatorios.jsx             # relatórios de vendas
-├─ App.jsx                        # rotas do frontend
-├─ main.jsx                       # bootstrap do app
-└─ style.css                      # estilos globais
-
+│  ├─ SelecionarAtendente.jsx # Tela inicial
+│  ├─ CriarPedido.jsx         # Criação e montagem do pedido
+│  ├─ ListarPedidos.jsx       # Listagem de pedidos
+│  ├─ PedidoDetalhe.jsx       # Detalhes do pedido
+│  └─ Relatorios.jsx          # Relatórios de vendas
+├─ App.jsx                    # Rotas
+├─ main.jsx                   # Bootstrap do app
+└─ index.css                  # Estilos globais
 ```
 
 ---
 
-## 🖼️ Design e Estilo
+## 🖼️ Design e UI
 
-- Tema escuro (fundo escuro + textos claros)
-- Cores quentes (laranja/amarelo) com combinação agradável
-- Componentes padronizados com CSS puro
-- Botões e cartões com bom contraste
-- Layout simples e intuitivo com Flexbox
-- Visual limpo para uso administrativo
+* Tema escuro
+* Paleta em tons de laranja (identidade visual)
+* Componentes do **Material UI**
+* Botões grandes e acessíveis
+* Cartões claros e legíveis
+* Interface pensada para uso rápido em ambiente real
 
 ---
 
 ## 🔗 Integração com Backend
 
-O frontend consome a API backend, que deve estar em execução em:
+O frontend consome a API backend em execução em:
 
 ```
+http://localhost:8080
+```
 
-[http://localhost:8080](http://localhost:8080)
+Principais endpoints utilizados:
 
-````
-
-Certifique-se de que o backend (sistema-sorveteria) esteja rodando antes de iniciar o frontend.
-
-Endpoints consumidos incluem:
-
-- `GET /atendentes`
-- `POST /pedidos`
-- `GET /pedidos`
-- `GET /pedidos/{id}`
-- `GET /sabores`
-- `GET /tamanhos`
-- `GET /relatorios/...`
+* `GET /atendentes`
+* `GET /tamanhos`
+* `GET /sabores`
+* `POST /pedidos`
+* `GET /pedidos`
+* `GET /pedidos/{id}`
+* `GET /relatorios`
 
 ---
 
-## ▶️ Como Executar
+## ▶️ Como Executar o Projeto
 
-1. **Clone o repositório:**
+1️⃣ Clone o repositório:
+
 ```bash
 git clone https://github.com/Roggerrs/sorveteria-frontend
-````
+```
 
-2. **Instale as dependências:**
+2️⃣ Instale as dependências:
 
 ```bash
 npm install
 ```
 
-3. **Inicie o projeto:**
+3️⃣ Inicie o projeto:
 
 ```bash
 npm run dev
 ```
 
-4. **Abra no navegador:**
+4️⃣ Acesse no navegador:
 
 ```
 http://localhost:5173
 ```
+
+⚠ Certifique-se de que o backend esteja rodando antes.
 
 ---
 
 ## 📊 Telas Disponíveis
 
 * **Selecionar Atendente**
-  Escolha o atendente que fará o pedido.
-
 * **Criar Pedido**
-  Defina o tamanho e sabores e adicione sorvetes ao pedido.
 
+  * Seleção de tamanho
+  * Seleção de sabores
+  * Adição e remoção de sorvetes
+  * Cálculo automático do total
 * **Listar Pedidos**
-  Visualize todos os pedidos registrados.
-
 * **Detalhes do Pedido**
-  Visualize informações completas de um pedido.
+* **Relatórios**
 
-* **Relatórios de Vendas**
-  Total faturado, por atendente, sabores e tamanhos mais vendidos.
+  * Total faturado
+  * Total por atendente
+  * Sabores mais vendidos
+  * Tamanhos mais vendidos
 
 ---
 
+## 📸 Demonstração do Sistema
+
+### Seleção de Atendente
+![Selecionar Atendente](docs/images/front_imagem1.png)
+
+### Criar Pedido
+![Criar Pedido](docs/images/front_imagem2.png)
+
+### Lista de Pedidos
+![Pedidos](docs/images/front_imagem3.png)
+
+### Relatórios
+![Relatórios](docs/images/front_imagem6.png)
+
+### Pedido
+![Relatórios](docs/images/front_imagem4.png)
+
+### Pedido detalhado
+![Relatórios](docs/images/front_imagem5.png)
+
+
+---
+
+
+
 ## 🧠 Contexto do Projeto
 
-Este frontend faz parte de um sistema completo de sorveteria, integrado com um backend em Spring Boot. O projeto foi desenvolvido com foco em:
+Este projeto foi desenvolvido com fins educacionais e práticos, simulando um sistema real de vendas.
 
-* Praticar consumo de API REST em React
-* Organização de código em **componentes e páginas**
-* Aprendizado de rotas com React Router
-* Estilização com CSS sem frameworks pesados
+O foco principal foi:
+
+* Integração frontend + backend
+* Regras de negócio no frontend
+* Componentização
+* UI responsiva
+* Organização de código
 
 ---
 
 ## 🔗 Projetos Relacionados
 
-* Backend em Spring Boot:
+* Backend (Spring Boot):
   [https://github.com/Roggerrs/sistema-sorveteria](https://github.com/Roggerrs/sistema-sorveteria)
 
-* Modelagem SQL do banco (histórico):
+* Modelagem SQL:
   [https://github.com/Roggerrs/Sistema-Sorveteria-SQL](https://github.com/Roggerrs/Sistema-Sorveteria-SQL)
 
-````
+---
+
+## ✅ Status do Projeto
+
+✔ Funcional
+✔ Responsivo
+✔ Completo
+✔ Pronto para portfólio
 
 ---
