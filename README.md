@@ -173,22 +173,22 @@ http://localhost:5173
 ## 📸 Demonstração do Sistema
 
 ### Seleção de Atendente
-![Selecionar Atendente](docs/images/front_imagem1.png)
+![Selecionar Atendente](docs/imagens/front_imagem1.png)
 
 ### Criar Pedido
-![Criar Pedido](docs/images/front_imagem2.png)
+![Criar Pedido](docs/imagens/front_imagem2.png)
 
 ### Lista de Pedidos
-![Pedidos](docs/images/front_imagem3.png)
+![Pedidos](docs/imagens/front_imagem3.png)
 
 ### Relatórios
-![Relatórios](docs/images/front_imagem6.png)
+![Relatórios](docs/imagens/front_imagem6.png)
 
 ### Pedido
-![Relatórios](docs/images/front_imagem4.png)
+![Relatórios](docs/imagens/front_imagem4.png)
 
 ### Pedido detalhado
-![Relatórios](docs/images/front_imagem5.png)
+![Relatórios](docs/imagens/front_imagem5.png)
 
 
 ---
