@@ -1,3 +1,4 @@
+import React from "react";
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { listarTamanhos, listarSabores, criarPedido } from "../api/api";
@@ -15,8 +16,12 @@ export default function CriarPedido() {
   const { atendenteId } = useParams();
   const navigate = useNavigate();
 
+  if (!atendenteId) {
+    return <p>Atendente não selecionado</p>;
+  }
+
   // =========================
-  // STATE
+  // STATES
   // =========================
   const [tamanhos, setTamanhos] = useState([]);
   const [sabores, setSabores] = useState([]);
@@ -24,6 +29,7 @@ export default function CriarPedido() {
   const [tamanhoId, setTamanhoId] = useState(null);
   const [saboresSelecionados, setSaboresSelecionados] = useState([]);
 
+  // carrinho de sorvetes
   const [sorvetes, setSorvetes] = useState([]);
 
   // =========================
@@ -68,7 +74,7 @@ export default function CriarPedido() {
       },
     ]);
 
-    // limpa seleção
+    // limpa seleção atual
     setTamanhoId(null);
     setSaboresSelecionados([]);
   }
@@ -85,7 +91,7 @@ export default function CriarPedido() {
   // =========================
   async function finalizarPedido() {
     if (sorvetes.length === 0) {
-      alert("Adicione pelo menos um sorvete");
+      alert("Adicione pelo menos um sorvete ao pedido");
       return;
     }
 
@@ -99,10 +105,8 @@ export default function CriarPedido() {
 
     try {
       await criarPedido(payload);
-      alert("Pedido criado com sucesso!");
       navigate("/pedidos");
     } catch (e) {
-      console.error(e);
       alert("Erro ao criar pedido");
     }
   }
@@ -120,6 +124,7 @@ export default function CriarPedido() {
         Atendente ID: {atendenteId}
       </Typography>
 
+      {/* TAMANHOS */}
       <Typography variant="h6">Tamanho</Typography>
       {tamanhos.map((t) => (
         <TamanhoItem
@@ -132,6 +137,7 @@ export default function CriarPedido() {
         />
       ))}
 
+      {/* SABORES */}
       <Typography variant="h6" sx={{ mt: 2 }}>
         Sabores
       </Typography>
@@ -147,6 +153,7 @@ export default function CriarPedido() {
         />
       ))}
 
+      {/* ADICIONAR SORVETE */}
       <Button
         fullWidth
         sx={{ mt: 2 }}
@@ -157,9 +164,7 @@ export default function CriarPedido() {
         Adicionar Sorvete
       </Button>
 
-      {/* ========================= */}
-      {/* LISTA DE SORVETES */}
-      {/* ========================= */}
+      {/* LISTA (CARRINHO) */}
       {sorvetes.length > 0 && (
         <>
           <Typography variant="h6" sx={{ mt: 3 }}>
@@ -184,8 +189,8 @@ export default function CriarPedido() {
               </Typography>
 
               <Button
-                color="error"
                 size="small"
+                color="error"
                 onClick={() => removerSorvete(index)}
               >
                 X
@@ -195,6 +200,7 @@ export default function CriarPedido() {
         </>
       )}
 
+      {/* FINALIZAR */}
       <Button
         fullWidth
         variant="contained"
