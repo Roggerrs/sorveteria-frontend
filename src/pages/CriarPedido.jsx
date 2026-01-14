@@ -55,29 +55,30 @@ export default function CriarPedido() {
   // =========================
   // FINALIZAR PEDIDO
   // =========================
-  function finalizarPedido() {
+  async function finalizarPedido() {
     if (!tamanhoId || saboresSelecionados.length === 0) {
       alert("Selecione um tamanho e pelo menos um sabor");
       return;
     }
 
-    // ✅ PAYLOAD CORRETO PARA O BACKEND
-    criarPedido({
+    const payload = {
       atendenteId: Number(atendenteId),
       sorvetes: [
         {
           tamanhoId: Number(tamanhoId),
-          saboresIds: saboresSelecionados.map(Number),
+          saboresIds: saboresSelecionados.map((id) => Number(id)),
         },
       ],
-    })
-      .then(() => {
-        alert("Pedido criado com sucesso!");
-        navigate("/pedidos");
-      })
-      .catch(() => {
-        alert("Erro ao criar pedido");
-      });
+    };
+
+    try {
+      await criarPedido(payload);
+      alert("Pedido criado com sucesso!");
+      navigate("/pedidos");
+    } catch (error) {
+      console.error("Erro ao criar pedido:", error);
+      alert("Erro ao criar pedido");
+    }
   }
 
   // =========================
