@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { buscarPedidoDetalhe } from "../api/api.js";
+import { buscarPedidoDetalhe } from "../api/api";
 
 export default function PedidoDetalhe() {
   const { id } = useParams();
@@ -20,7 +20,7 @@ export default function PedidoDetalhe() {
 
   return (
     <div>
-      <h1>Pedido #{pedido.idPedido}</h1>
+      <h1>Pedido #{pedido.id}</h1>
 
       <p>
         <strong>Atendente:</strong> {pedido.atendente}
@@ -28,7 +28,9 @@ export default function PedidoDetalhe() {
 
       <p>
         <strong>Data:</strong>{" "}
-        {new Date(pedido.dataPedido).toLocaleString()}
+        {pedido.dataPedido
+          ? new Date(pedido.dataPedido).toLocaleString()
+          : "-"}
       </p>
 
       <h2>Sorvetes</h2>
@@ -36,7 +38,7 @@ export default function PedidoDetalhe() {
       <ul>
         {pedido.sorvetes.map((s, index) => (
           <li key={index}>
-            {s.tamanho} — {s.sabores.join(", ")} — R$ {s.preco}
+            {s.tamanho} — {s.sabores.join(", ")} — R$ {s.precoTotal}
           </li>
         ))}
       </ul>
