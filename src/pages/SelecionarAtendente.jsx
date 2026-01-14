@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-
 import { listarAtendentes } from "../api/api";
+import { useNavigate } from "react-router-dom";
 
-export default function SelecionarAtendente({ onSelecionar }) {
+export default function SelecionarAtendente() {
   const [atendentes, setAtendentes] = useState([]);
   const [erro, setErro] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     listarAtendentes()
@@ -23,7 +24,7 @@ export default function SelecionarAtendente({ onSelecionar }) {
       {atendentes.map((a) => (
         <button
           key={a.id}
-          onClick={() => onSelecionar(a.id)}
+          onClick={() => navigate(`/criar/${a.id}`)}
           style={{ marginRight: "10px" }}
         >
           {a.nome}
