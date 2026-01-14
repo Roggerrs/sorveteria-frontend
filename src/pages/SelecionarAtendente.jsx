@@ -1,32 +1,34 @@
 import React, { useEffect, useState } from "react";
 
+import { listarAtendentes } from "../api/api";
 
-
-import { useNavigate } from "react-router-dom";
-
-const BASE_URL = "http://localhost:8080";
-
-export default function SelecionarAtendente() {
+export default function SelecionarAtendente({ onSelecionar }) {
   const [atendentes, setAtendentes] = useState([]);
-  const navigate = useNavigate();
+  const [erro, setErro] = useState(false);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/atendentes`)
-      .then(res => res.json())
-      .then(setAtendentes);
+    listarAtendentes()
+      .then(setAtendentes)
+      .catch(() => setErro(true));
   }, []);
 
-  return (
-    <div className="container">
-      <h1>Selecione o atendente</h1>
+  if (erro) {
+    return <p style={{ color: "red" }}>Erro ao carregar atendentes</p>;
+  }
 
-      <div className="actions">
-        {atendentes.map(a => (
-          <button key={a.id} onClick={() => navigate(`/criar/${a.id}`)}>
-            {a.nome}
-          </button>
-        ))}
-      </div>
+  return (
+    <div style={{ padding: "20px" }}>
+      <h2>Selecione o atendente</h2>
+
+      {atendentes.map((a) => (
+        <button
+          key={a.id}
+          onClick={() => onSelecionar(a.id)}
+          style={{ marginRight: "10px" }}
+        >
+          {a.nome}
+        </button>
+      ))}
     </div>
   );
 }
