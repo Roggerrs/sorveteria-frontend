@@ -7,7 +7,7 @@ export default function TamanhoItem({
   preco,
   selected,
   onSelect,
-  tamanho // "pequeno" | "medio" | "grande"
+  tamanho, // "pequeno" | "medio" | "grande"
 }) {
   const tamanhoImagem =
     tamanho === "pequeno" ? 32 :
@@ -25,10 +25,8 @@ export default function TamanhoItem({
         borderRadius: "10px",
         marginBottom: "10px",
         cursor: "pointer",
-
         backgroundColor: "#ffffff",
         border: selected ? "2px solid #ff9800" : "1px solid #ddd",
-
         transition: "all 0.2s ease",
       }}
     >
@@ -44,15 +42,10 @@ export default function TamanhoItem({
         alt={nome}
         width={tamanhoImagem}
         height={tamanhoImagem}
+        style={{ transition: "all 0.2s ease" }}
       />
 
-      <Typography
-        sx={{
-          fontWeight: 600,
-          color: "#222", // 👈 TEXTO VISÍVEL
-          fontSize: "1rem"
-        }}
-      >
+      <Typography sx={{ fontWeight: 600, color: "#222", fontSize: "1rem" }}>
         {nome} (R$ {preco})
       </Typography>
     </Box>

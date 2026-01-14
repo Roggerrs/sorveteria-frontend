@@ -19,20 +19,13 @@ export default function CriarPedido() {
     return <p>Atendente não selecionado</p>;
   }
 
-  // =========================
-  // STATE
-  // =========================
   const [tamanhos, setTamanhos] = useState([]);
   const [sabores, setSabores] = useState([]);
 
   const [tamanhoId, setTamanhoId] = useState(null);
   const [saboresSelecionados, setSaboresSelecionados] = useState([]);
-
   const [sorvetes, setSorvetes] = useState([]);
 
-  // =========================
-  // LOAD INICIAL
-  // =========================
   useEffect(() => {
     listarTamanhos().then(setTamanhos);
     listarSabores().then(setSabores);
@@ -44,9 +37,6 @@ export default function CriarPedido() {
     Baunilha: baunilhaImg,
   };
 
-  // =========================
-  // TOGGLE SABOR
-  // =========================
   function toggleSabor(id) {
     setSaboresSelecionados((prev) =>
       prev.includes(id)
@@ -55,9 +45,6 @@ export default function CriarPedido() {
     );
   }
 
-  // =========================
-  // ADICIONAR SORVETE
-  // =========================
   function adicionarSorvete() {
     if (!tamanhoId || saboresSelecionados.length === 0) {
       alert("Selecione um tamanho e pelo menos um sabor");
@@ -66,41 +53,29 @@ export default function CriarPedido() {
 
     setSorvetes((prev) => [
       ...prev,
-      {
-        tamanhoId,
-        saboresIds: saboresSelecionados,
-      },
+      { tamanhoId, saboresIds: saboresSelecionados },
     ]);
 
     setTamanhoId(null);
     setSaboresSelecionados([]);
   }
 
-  // =========================
-  // REMOVER SORVETE
-  // =========================
   function removerSorvete(index) {
     setSorvetes((prev) => prev.filter((_, i) => i !== index));
   }
 
-  // =========================
-  // TOTAL DO PEDIDO (FRONT)
-  // =========================
   const totalPedido = sorvetes.reduce((total, s) => {
     const tamanho = tamanhos.find((t) => t.id === s.tamanhoId);
-    const valorTamanho = tamanho ? tamanho.precoTamanho : 0;
+    const valorTamanho = tamanho?.precoTamanho || 0;
 
     const valorSabores = s.saboresIds.reduce((acc, id) => {
       const sabor = sabores.find((sb) => sb.id === id);
-      return acc + (sabor ? sabor.precoAdicional : 0);
+      return acc + (sabor?.precoAdicional || 0);
     }, 0);
 
     return total + valorTamanho + valorSabores;
   }, 0);
 
-  // =========================
-  // FINALIZAR PEDIDO
-  // =========================
   async function finalizarPedido() {
     if (sorvetes.length === 0) {
       alert("Adicione pelo menos um sorvete");
@@ -118,23 +93,18 @@ export default function CriarPedido() {
     try {
       await criarPedido(payload);
       navigate("/pedidos");
-    } catch (e) {
+    } catch {
       alert("Erro ao criar pedido");
     }
   }
 
-  // =========================
-  // RENDER
-  // =========================
   return (
     <Box sx={{ maxWidth: 480, margin: "0 auto", padding: 2 }}>
       <Typography variant="h4" gutterBottom>
         Criar Pedido
       </Typography>
 
-      <Typography gutterBottom>
-        Atendente ID: {atendenteId}
-      </Typography>
+      <Typography gutterBottom>Atendente ID: {atendenteId}</Typography>
 
       <Typography variant="h6">Tamanho</Typography>
       {tamanhos.map((t) => (
@@ -143,6 +113,7 @@ export default function CriarPedido() {
           imagem={sorveteImg}
           nome={t.descricao}
           preco={t.precoTamanho}
+          tamanho={t.descricao.toLowerCase()} // 🔥 AQUI ESTÁ O AJUSTE
           selected={tamanhoId === t.id}
           onSelect={() => setTamanhoId(t.id)}
         />
@@ -173,9 +144,6 @@ export default function CriarPedido() {
         Adicionar Sorvete
       </Button>
 
-      {/* ========================= */}
-      {/* LISTA DE SORVETES */}
-      {/* ========================= */}
       {sorvetes.length > 0 && (
         <>
           <Typography variant="h6" sx={{ mt: 3 }}>
