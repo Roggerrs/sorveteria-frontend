@@ -1,19 +1,21 @@
-import { useEffect, useState } from "react";
-import { listarTamanhos, listarSabores, criarPedido } from "../api/api";
+import React, { useEffect, useState } from "react";
 
-export default function CriarSorvete() {
+import { listarTamanhos, listarSabores, criarPedido } from "../api/api"; 
+ 
   const [tamanhos, setTamanhos] = useState([]);
   const [sabores, setSabores] = useState([]);
 
   const [tamanhoId, setTamanhoId] = useState("");
   const [saboresSelecionados, setSaboresSelecionados] = useState([]);
 
-  // ⚠️ enquanto não existe login
-  const atendenteId = 1;
-
   useEffect(() => {
-    listarTamanhos().then(setTamanhos);
-    listarSabores().then(setSabores);
+    fetch(`${BASE_URL}/tamanhos`)
+      .then((res) => res.json())
+      .then(setTamanhos);
+
+    fetch(`${BASE_URL}/sabores`)
+      .then((res) => res.json())
+      .then(setSabores);
   }, []);
 
   function toggleSabor(id) {
@@ -31,13 +33,18 @@ export default function CriarSorvete() {
     }
 
     const pedido = {
-      atendenteId: Number(atendenteId),
-      tamanhoId: Number(tamanhoId),
-      sabores: saboresSelecionados,
+      atendenteId,
+      tamanhoId,
+      saboresIds: saboresSelecionados,
     };
 
-    criarPedido(pedido)
-      .then(() => {
+    fetch(`${BASE_URL}/pedidos`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(pedido),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error();
         alert("Pedido criado com sucesso!");
         setSaboresSelecionados([]);
         setTamanhoId("");
@@ -46,14 +53,11 @@ export default function CriarSorvete() {
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Criar Sorvete</h2>
+    <div>
+      <h2>Criar Pedido</h2>
 
       <h3>Tamanho</h3>
-      <select
-        value={tamanhoId}
-        onChange={(e) => setTamanhoId(e.target.value)}
-      >
+      <select value={tamanhoId} onChange={(e) => setTamanhoId(e.target.value)}>
         <option value="">Selecione</option>
         {tamanhos.map((t) => (
           <option key={t.id} value={t.id}>
@@ -80,4 +84,5 @@ export default function CriarSorvete() {
       <button onClick={salvarPedido}>Finalizar Pedido</button>
     </div>
   );
-}
+ 
+
