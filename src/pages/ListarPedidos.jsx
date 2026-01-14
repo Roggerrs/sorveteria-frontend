@@ -20,8 +20,7 @@ export default function ListarPedidos() {
         {pedidos.map((p) => (
           <li key={p.id} className="card">
             <span>
-              Pedido #{p.id} —{" "}
-              <strong>R$ {Number(p.total).toFixed(2)}</strong>
+              Pedido #{p.id}
             </span>
 
             <button onClick={() => navigate(`/pedidos/${p.id}`)}>
