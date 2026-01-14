@@ -1,22 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { listarTamanhos, listarSabores, criarPedido } from "../api/api";
 
-const BASE_URL = "http://localhost:8080";
-
-export default function CriarPedido({ atendenteId }) {
+export default function CriarSorvete() {
   const [tamanhos, setTamanhos] = useState([]);
   const [sabores, setSabores] = useState([]);
 
   const [tamanhoId, setTamanhoId] = useState("");
   const [saboresSelecionados, setSaboresSelecionados] = useState([]);
 
-  useEffect(() => {
-    fetch(`${BASE_URL}/tamanhos`)
-      .then((res) => res.json())
-      .then(setTamanhos);
+  // ⚠️ enquanto não existe login
+  const atendenteId = 1;
 
-    fetch(`${BASE_URL}/sabores`)
-      .then((res) => res.json())
-      .then(setSabores);
+  useEffect(() => {
+    listarTamanhos().then(setTamanhos);
+    listarSabores().then(setSabores);
   }, []);
 
   function toggleSabor(id) {
@@ -34,18 +31,13 @@ export default function CriarPedido({ atendenteId }) {
     }
 
     const pedido = {
-      atendenteId,
-      tamanhoId,
-      saboresIds: saboresSelecionados,
+      atendenteId: Number(atendenteId),
+      tamanhoId: Number(tamanhoId),
+      sabores: saboresSelecionados,
     };
 
-    fetch(`${BASE_URL}/pedidos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(pedido),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error();
+    criarPedido(pedido)
+      .then(() => {
         alert("Pedido criado com sucesso!");
         setSaboresSelecionados([]);
         setTamanhoId("");
@@ -54,11 +46,14 @@ export default function CriarPedido({ atendenteId }) {
   }
 
   return (
-    <div>
-      <h2>Criar Pedido</h2>
+    <div style={{ padding: "20px" }}>
+      <h2>Criar Sorvete</h2>
 
       <h3>Tamanho</h3>
-      <select value={tamanhoId} onChange={(e) => setTamanhoId(e.target.value)}>
+      <select
+        value={tamanhoId}
+        onChange={(e) => setTamanhoId(e.target.value)}
+      >
         <option value="">Selecione</option>
         {tamanhos.map((t) => (
           <option key={t.id} value={t.id}>

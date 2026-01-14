@@ -1,6 +1,5 @@
 const BASE_URL = "https://sistema-sorveteria-production.up.railway.app";
 
-
 // =========================
 // ATENDENTES
 // =========================
@@ -39,8 +38,11 @@ export async function criarPedido(dados) {
   });
 
   if (!res.ok) {
-    throw new Error("Erro ao criar pedido");
+    const erro = await res.text();
+    throw new Error(erro);
   }
+
+  return res.json();
 }
 
 export async function listarPedidos() {
@@ -56,7 +58,7 @@ export async function buscarPedidoDetalhe(id) {
 }
 
 // =========================
-// RELATÓRIOS (🆕)
+// RELATÓRIOS
 // =========================
 export async function totalFaturado() {
   const res = await fetch(`${BASE_URL}/relatorios/total-faturado`);
