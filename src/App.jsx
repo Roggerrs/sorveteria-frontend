@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import SelecionarAtendente from "./pages/SelecionarAtendente";
@@ -11,9 +10,10 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* PRIMEIRA TELA */}
         <Route path="/" element={<SelecionarAtendente />} />
 
-        {/* ⚠️ ROTA CORRETA */}
+        {/* CRIAR PEDIDO COM ATENDENTE */}
         <Route
           path="/criar-pedido/:atendenteId"
           element={<CriarPedido />}
