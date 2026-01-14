@@ -15,6 +15,10 @@ export default function CriarPedido() {
   const { atendenteId } = useParams();
   const navigate = useNavigate();
 
+  if (!atendenteId) {
+    return <p>Atendente não selecionado</p>;
+  }
+
   const [tamanhos, setTamanhos] = useState([]);
   const [sabores, setSabores] = useState([]);
   const [tamanhoId, setTamanhoId] = useState(null);
@@ -38,6 +42,11 @@ export default function CriarPedido() {
   }
 
   async function finalizarPedido() {
+    if (!tamanhoId || saboresSelecionados.length === 0) {
+      alert("Selecione tamanho e sabores");
+      return;
+    }
+
     const payload = {
       atendenteId: Number(atendenteId),
       sorvetes: [
