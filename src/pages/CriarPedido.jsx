@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { listarTamanhos, listarSabores, criarPedido } from "../api/api";
 
-import { Button, Typography, Box } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 
 import TamanhoItem from "../components/TamanhoItem";
 import SaborItem from "../components/SaborItem";
@@ -16,74 +16,74 @@ export default function CriarPedido() {
   const { atendenteId } = useParams();
   const navigate = useNavigate();
 
-  // =========================
-  // STATE
-  // =========================
   const [tamanhos, setTamanhos] = useState([]);
   const [sabores, setSabores] = useState([]);
+
   const [tamanhoId, setTamanhoId] = useState(null);
   const [saboresSelecionados, setSaboresSelecionados] = useState([]);
+  const [sorvetes, setSorvetes] = useState([]);
 
-  // =========================
-  // LOAD INICIAL
-  // =========================
   useEffect(() => {
     listarTamanhos().then(setTamanhos);
     listarSabores().then(setSabores);
   }, []);
 
-  // =========================
-  // IMAGENS POR SABOR
-  // =========================
-  const imagemPorSabor = {
+  const imagens = {
     Chocolate: chocolateImg,
     Morango: morangoImg,
     Baunilha: baunilhaImg,
   };
 
-  // =========================
-  // TOGGLE SABOR
-  // =========================
   function toggleSabor(id) {
-    setSaboresSelecionados((prev) =>
+    setSaboresSelecionados(prev =>
       prev.includes(id)
-        ? prev.filter((s) => s !== id)
+        ? prev.filter(s => s !== id)
         : [...prev, id]
     );
   }
 
-  // =========================
-  // FINALIZAR PEDIDO
-  // =========================
-  async function finalizarPedido() {
+  function adicionarSorvete() {
     if (!tamanhoId || saboresSelecionados.length === 0) {
       alert("Selecione um tamanho e pelo menos um sabor");
       return;
     }
 
+    setSorvetes(prev => [
+      ...prev,
+      {
+        tamanhoId,
+        saboresIds: saboresSelecionados,
+      },
+    ]);
+
+    setTamanhoId(null);
+    setSaboresSelecionados([]);
+  }
+
+  async function finalizarPedido() {
+    if (sorvetes.length === 0) {
+      alert("Adicione pelo menos um sorvete");
+      return;
+    }
+
     const payload = {
       atendenteId: Number(atendenteId),
-      sorvetes: [
-        {
-          tamanhoId: Number(tamanhoId),
-          saboresIds: saboresSelecionados.map((id) => Number(id)),
-        },
-      ],
+      sorvetes: sorvetes.map(s => ({
+        tamanhoId: Number(s.tamanhoId),
+        saboresIds: s.saboresIds.map(Number),
+      })),
     };
 
     try {
       await criarPedido(payload);
       alert("Pedido criado com sucesso!");
       navigate("/pedidos");
-    } catch (error) {
-      console.error("Erro ao criar pedido:", error);
+    } catch (e) {
+      console.error(e);
       alert("Erro ao criar pedido");
     }
   }
 
-  // =========================
-  // RENDER
-  // =========================
   return (
     <Box sx={{ maxWidth: 480, margin: "0 auto", padding: 2 }}>
       <Typography variant="h4" color="warning.main" gutterBottom>
@@ -94,42 +94,29 @@ export default function CriarPedido() {
         Atendente: {atendenteId}
       </Typography>
 
-      {/* ========================= */}
-      {/* TAMANHOS */}
-      {/* ========================= */}
       <Typography variant="h6" sx={{ mt: 2 }}>
         Tamanho
       </Typography>
 
-      {tamanhos.map((t) => (
+      {tamanhos.map(t => (
         <TamanhoItem
           key={t.id}
           imagem={sorveteImg}
           nome={t.descricao}
           preco={t.precoTamanho}
-          tamanho={
-            t.descricao.toLowerCase().includes("pequeno")
-              ? "pequeno"
-              : t.descricao.toLowerCase().includes("médio")
-              ? "medio"
-              : "grande"
-          }
           selected={tamanhoId === t.id}
           onSelect={() => setTamanhoId(t.id)}
         />
       ))}
 
-      {/* ========================= */}
-      {/* SABORES */}
-      {/* ========================= */}
       <Typography variant="h6" sx={{ mt: 3 }}>
         Sabores
       </Typography>
 
-      {sabores.map((s) => (
+      {sabores.map(s => (
         <SaborItem
           key={s.id}
-          imagem={imagemPorSabor[s.nome]}
+          imagem={imagens[s.nome]}
           nome={s.nome}
           preco={s.precoAdicional}
           checked={saboresSelecionados.includes(s.id)}
@@ -137,14 +124,16 @@ export default function CriarPedido() {
         />
       ))}
 
-      {/* ========================= */}
-      {/* FINALIZAR */}
-      {/* ========================= */}
+      <Button fullWidth sx={{ mt: 2 }} onClick={adicionarSorvete}>
+        Adicionar Sorvete
+      </Button>
+
       <Button
         fullWidth
         variant="contained"
         color="warning"
-        sx={{ mt: 3 }}
+        sx={{ mt: 2 }}
+        disabled={sorvetes.length === 0}
         onClick={finalizarPedido}
       >
         Finalizar Pedido
