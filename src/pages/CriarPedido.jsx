@@ -1,5 +1,3 @@
-import React from "react";
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { listarTamanhos, listarSabores, criarPedido } from "../api/api";
@@ -17,15 +15,20 @@ export default function CriarPedido() {
   const { atendenteId } = useParams();
   const navigate = useNavigate();
 
-  if (!atendenteId) {
-    return <p>Atendente não selecionado</p>;
-  }
-
+  // =========================
+  // STATE
+  // =========================
   const [tamanhos, setTamanhos] = useState([]);
   const [sabores, setSabores] = useState([]);
+
   const [tamanhoId, setTamanhoId] = useState(null);
   const [saboresSelecionados, setSaboresSelecionados] = useState([]);
 
+  const [sorvetes, setSorvetes] = useState([]);
+
+  // =========================
+  // LOAD INICIAL
+  // =========================
   useEffect(() => {
     listarTamanhos().then(setTamanhos);
     listarSabores().then(setSabores);
@@ -37,36 +40,76 @@ export default function CriarPedido() {
     Baunilha: baunilhaImg,
   };
 
+  // =========================
+  // TOGGLE SABOR
+  // =========================
   function toggleSabor(id) {
     setSaboresSelecionados((prev) =>
-      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+      prev.includes(id)
+        ? prev.filter((s) => s !== id)
+        : [...prev, id]
     );
   }
 
-  async function finalizarPedido() {
+  // =========================
+  // ADICIONAR SORVETE
+  // =========================
+  function adicionarSorvete() {
     if (!tamanhoId || saboresSelecionados.length === 0) {
-      alert("Selecione tamanho e sabores");
+      alert("Selecione um tamanho e pelo menos um sabor");
+      return;
+    }
+
+    setSorvetes((prev) => [
+      ...prev,
+      {
+        tamanhoId,
+        saboresIds: saboresSelecionados,
+      },
+    ]);
+
+    // limpa seleção
+    setTamanhoId(null);
+    setSaboresSelecionados([]);
+  }
+
+  // =========================
+  // REMOVER SORVETE
+  // =========================
+  function removerSorvete(index) {
+    setSorvetes((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  // =========================
+  // FINALIZAR PEDIDO
+  // =========================
+  async function finalizarPedido() {
+    if (sorvetes.length === 0) {
+      alert("Adicione pelo menos um sorvete");
       return;
     }
 
     const payload = {
       atendenteId: Number(atendenteId),
-      sorvetes: [
-        {
-          tamanhoId: Number(tamanhoId),
-          saboresIds: saboresSelecionados.map(Number),
-        },
-      ],
+      sorvetes: sorvetes.map((s) => ({
+        tamanhoId: Number(s.tamanhoId),
+        saboresIds: s.saboresIds.map(Number),
+      })),
     };
 
     try {
       await criarPedido(payload);
+      alert("Pedido criado com sucesso!");
       navigate("/pedidos");
     } catch (e) {
+      console.error(e);
       alert("Erro ao criar pedido");
     }
   }
 
+  // =========================
+  // RENDER
+  // =========================
   return (
     <Box sx={{ maxWidth: 480, margin: "0 auto", padding: 2 }}>
       <Typography variant="h4" gutterBottom>
@@ -106,9 +149,58 @@ export default function CriarPedido() {
 
       <Button
         fullWidth
+        sx={{ mt: 2 }}
+        variant="outlined"
+        color="warning"
+        onClick={adicionarSorvete}
+      >
+        Adicionar Sorvete
+      </Button>
+
+      {/* ========================= */}
+      {/* LISTA DE SORVETES */}
+      {/* ========================= */}
+      {sorvetes.length > 0 && (
+        <>
+          <Typography variant="h6" sx={{ mt: 3 }}>
+            Sorvetes do Pedido
+          </Typography>
+
+          {sorvetes.map((s, index) => (
+            <Box
+              key={index}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mt: 1,
+                p: 1,
+                border: "1px solid #444",
+                borderRadius: 1,
+              }}
+            >
+              <Typography>
+                Tamanho #{s.tamanhoId} — Sabores {s.saboresIds.join(", ")}
+              </Typography>
+
+              <Button
+                color="error"
+                size="small"
+                onClick={() => removerSorvete(index)}
+              >
+                X
+              </Button>
+            </Box>
+          ))}
+        </>
+      )}
+
+      <Button
+        fullWidth
         variant="contained"
         color="warning"
         sx={{ mt: 3 }}
+        disabled={sorvetes.length === 0}
         onClick={finalizarPedido}
       >
         Finalizar Pedido
