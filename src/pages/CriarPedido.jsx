@@ -61,10 +61,15 @@ export default function CriarPedido() {
       return;
     }
 
+    // ✅ PAYLOAD CORRETO PARA O BACKEND
     criarPedido({
       atendenteId: Number(atendenteId),
-      tamanhoId: Number(tamanhoId),
-      saboresIds: saboresSelecionados.map(Number),
+      sorvetes: [
+        {
+          tamanhoId: Number(tamanhoId),
+          saboresIds: saboresSelecionados.map(Number),
+        },
+      ],
     })
       .then(() => {
         alert("Pedido criado com sucesso!");
