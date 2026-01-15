@@ -1,15 +1,5 @@
 const BASE_URL = "https://sistema-sorveteria-production.up.railway.app";
 
-
-// 🔐 BASIC AUTH
-const USERNAME = "admin";
-const PASSWORD = "1234";
-
-const AUTH_HEADER = {
-  "Authorization": "Basic " + btoa(`${USERNAME}:${PASSWORD}`)
-};
-
-
 // =========================
 // ATENDENTES
 // =========================
