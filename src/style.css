@@ -1,5 +1,5 @@
 /* =======================
-   BASE
+   RESET / BASE
 ======================= */
 * {
   box-sizing: border-box;
@@ -73,6 +73,39 @@ button.secondary:hover {
 }
 
 /* =======================
+   OPÇÕES (TAMANHO / SABOR)
+======================= */
+.option {
+  background-color: #2f2f2f;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.option:hover {
+  border-color: #ff9800;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+/* =======================
+   INPUTS
+======================= */
+input[type="radio"],
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #ff9800;
+}
+
+/* =======================
    FLEX
 ======================= */
 .flex {
@@ -95,4 +128,63 @@ ul {
 
 li {
   margin-bottom: 6px;
+}
+
+/* =======================
+   ACTIONS (BOTÕES FINAIS)
+======================= */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* =======================
+   RESPONSIVO - MOBILE
+======================= */
+@media (max-width: 768px) {
+
+  body {
+    font-size: 16px;
+  }
+
+  .container {
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: 22px;
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  .card,
+  .option {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  label {
+    font-size: 16px;
+  }
+
+  input[type="radio"],
+  input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 12px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
 }
