@@ -5,6 +5,11 @@
   box-sizing: border-box;
 }
 
+html, body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -13,7 +18,7 @@ body {
 }
 
 /* =======================
-   CONTAINER
+   CONTAINER (DESKTOP)
 ======================= */
 .container {
   max-width: 900px;
@@ -38,11 +43,13 @@ h2 {
    BOTÕES
 ======================= */
 button {
-  padding: 10px 16px;
-  border-radius: 8px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
   border: none;
   cursor: pointer;
   font-weight: 600;
+  font-size: 16px;
   background-color: #ff9800;
   color: #242424;
   transition: 0.2s;
@@ -66,7 +73,7 @@ button.secondary:hover {
 ======================= */
 .card {
   background-color: #2f2f2f;
-  border-radius: 12px;
+  border-radius: 14px;
   padding: 16px;
   margin-bottom: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
@@ -76,46 +83,34 @@ button.secondary:hover {
    OPÇÕES (TAMANHO / SABOR)
 ======================= */
 .option {
+  width: 100%;
   background-color: #2f2f2f;
-  border: 1px solid #444;
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 10px;
-  cursor: pointer;
+  border: 2px solid #444;
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 12px;
 }
 
 .option:hover {
   border-color: #ff9800;
 }
 
+/* =======================
+   LABELS / INPUTS
+======================= */
 label {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
+  font-size: 16px;
   cursor: pointer;
 }
 
-/* =======================
-   INPUTS
-======================= */
 input[type="radio"],
 input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   accent-color: #ff9800;
-}
-
-/* =======================
-   FLEX
-======================= */
-.flex {
-  display: flex;
-  gap: 10px;
-}
-
-.space-between {
-  justify-content: space-between;
-  align-items: center;
 }
 
 /* =======================
@@ -127,28 +122,27 @@ ul {
 }
 
 li {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 /* =======================
-   ACTIONS (BOTÕES FINAIS)
+   ACTIONS
 ======================= */
 .actions {
   display: flex;
-  gap: 12px;
-  margin-top: 20px;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 24px;
 }
 
 /* =======================
-   RESPONSIVO - MOBILE
+   🔥 MOBILE FIRST
 ======================= */
 @media (max-width: 768px) {
 
-  body {
-    font-size: 16px;
-  }
-
   .container {
+    width: 100%;
+    max-width: 100%;
     padding: 16px;
   }
 
@@ -163,28 +157,8 @@ li {
 
   .card,
   .option {
-    padding: 14px;
-    border-radius: 14px;
-  }
-
-  label {
-    font-size: 16px;
-  }
-
-  input[type="radio"],
-  input[type="checkbox"] {
-    width: 22px;
-    height: 22px;
-  }
-
-  button {
-    width: 100%;
-    padding: 14px;
-    font-size: 16px;
-    border-radius: 12px;
-  }
-
-  .actions {
-    flex-direction: column;
+    padding: 16px;
   }
 }
+/* =======================
+   💻 DESKTOP
