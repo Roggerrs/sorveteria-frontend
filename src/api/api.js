@@ -16,11 +16,16 @@ export async function login(username, password) {
     throw new Error("Login inválido");
   }
 
-  return res.json(); // { token }
+  const data = await res.json(); // { token }
+
+  //  SALVA O TOKEN
+  localStorage.setItem("token", data.token);
+
+  return data;
 }
 
 // =========================
-// HEADER JWT (AUTOMÁTICO)
+// JWT HEADER (AUTOMÁTICO)
 // =========================
 function getAuthHeader() {
   const token = localStorage.getItem("token");
@@ -139,4 +144,11 @@ export async function tamanhosMaisVendidos() {
 
   if (!res.ok) throw new Error("Erro ao buscar tamanhos mais vendidos");
   return res.json();
+}
+
+// =========================
+// LOGOUT (OPCIONAL)
+// =========================
+export function logout() {
+  localStorage.removeItem("token");
 }
