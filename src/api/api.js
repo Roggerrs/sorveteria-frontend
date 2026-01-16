@@ -1,51 +1,15 @@
 const BASE_URL = "https://sistema-sorveteria-production.up.railway.app";
 
 // =========================
-// AUTH
-// =========================
-export async function login(username, password) {
-  const res = await fetch(`${BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ username, password }),
-  });
-
-  if (!res.ok) {
-    throw new Error("Login inválido");
-  }
-
-  const data = await res.json(); // { token }
-
-  //  SALVA O TOKEN
-  localStorage.setItem("token", data.token);
-
-  return data;
-}
-
-// =========================
-// JWT HEADER (AUTOMÁTICO)
-// =========================
-function getAuthHeader() {
-  const token = localStorage.getItem("token");
-
-  if (!token) return {};
-
-  return {
-    Authorization: `Bearer ${token}`,
-  };
-}
-
-// =========================
 // ATENDENTES
 // =========================
 export async function listarAtendentes() {
-  const res = await fetch(`${BASE_URL}/atendentes`, {
-    headers: getAuthHeader(),
-  });
+  const res = await fetch(`${BASE_URL}/atendentes`);
 
-  if (!res.ok) throw new Error("Erro ao listar atendentes");
+  if (!res.ok) {
+    throw new Error("Erro ao listar atendentes");
+  }
+
   return res.json();
 }
 
@@ -53,11 +17,12 @@ export async function listarAtendentes() {
 // TAMANHOS
 // =========================
 export async function listarTamanhos() {
-  const res = await fetch(`${BASE_URL}/tamanhos`, {
-    headers: getAuthHeader(),
-  });
+  const res = await fetch(`${BASE_URL}/tamanhos`);
 
-  if (!res.ok) throw new Error("Erro ao listar tamanhos");
+  if (!res.ok) {
+    throw new Error("Erro ao listar tamanhos");
+  }
+
   return res.json();
 }
 
@@ -65,11 +30,12 @@ export async function listarTamanhos() {
 // SABORES
 // =========================
 export async function listarSabores() {
-  const res = await fetch(`${BASE_URL}/sabores`, {
-    headers: getAuthHeader(),
-  });
+  const res = await fetch(`${BASE_URL}/sabores`);
 
-  if (!res.ok) throw new Error("Erro ao listar sabores");
+  if (!res.ok) {
+    throw new Error("Erro ao listar sabores");
+  }
+
   return res.json();
 }
 
@@ -80,75 +46,77 @@ export async function criarPedido(dados) {
   const res = await fetch(`${BASE_URL}/pedidos`, {
     method: "POST",
     headers: {
-      ...getAuthHeader(),
       "Content-Type": "application/json",
     },
     body: JSON.stringify(dados),
   });
 
-  if (!res.ok) throw new Error("Erro ao criar pedido");
+  if (!res.ok) {
+    throw new Error("Erro ao criar pedido");
+  }
+
+  return res.json();
 }
 
 export async function listarPedidos() {
-  const res = await fetch(`${BASE_URL}/pedidos`, {
-    headers: getAuthHeader(),
-  });
+  const res = await fetch(`${BASE_URL}/pedidos`);
 
-  if (!res.ok) throw new Error("Erro ao listar pedidos");
+  if (!res.ok) {
+    throw new Error("Erro ao listar pedidos");
+  }
+
   return res.json();
 }
 
 export async function buscarPedidoDetalhe(id) {
-  const res = await fetch(`${BASE_URL}/pedidos/${id}`, {
-    headers: getAuthHeader(),
-  });
+  const res = await fetch(`${BASE_URL}/pedidos/${id}`);
 
-  if (!res.ok) throw new Error("Erro ao buscar pedido");
+  if (!res.ok) {
+    throw new Error("Erro ao buscar pedido");
+  }
+
   return res.json();
 }
 
 // =========================
-// RELATÓRIOS
+// RELATÓRIOS (PÚBLICOS)
 // =========================
 export async function totalFaturado() {
-  const res = await fetch(`${BASE_URL}/relatorios/total-faturado`, {
-    headers: getAuthHeader(),
-  });
+  const res = await fetch(`${BASE_URL}/relatorios/total-faturado`);
 
-  if (!res.ok) throw new Error("Erro ao buscar total faturado");
+  if (!res.ok) {
+    throw new Error("Erro ao buscar total faturado");
+  }
+
   return res.json();
 }
 
 export async function totalPorAtendente() {
-  const res = await fetch(`${BASE_URL}/relatorios/por-atendente`, {
-    headers: getAuthHeader(),
-  });
+  const res = await fetch(`${BASE_URL}/relatorios/por-atendente`);
 
-  if (!res.ok) throw new Error("Erro ao buscar total por atendente");
+  if (!res.ok) {
+    throw new Error("Erro ao buscar total por atendente");
+  }
+
   return res.json();
 }
 
 export async function saboresMaisVendidos() {
-  const res = await fetch(`${BASE_URL}/relatorios/sabores-mais-vendidos`, {
-    headers: getAuthHeader(),
-  });
+  const res = await fetch(`${BASE_URL}/relatorios/sabores-mais-vendidos`);
 
-  if (!res.ok) throw new Error("Erro ao buscar sabores mais vendidos");
+  if (!res.ok) {
+    throw new Error("Erro ao buscar sabores mais vendidos");
+  }
+
   return res.json();
 }
 
 export async function tamanhosMaisVendidos() {
-  const res = await fetch(`${BASE_URL}/relatorios/tamanhos-mais-vendidos`, {
-    headers: getAuthHeader(),
-  });
+  const res = await fetch(`${BASE_URL}/relatorios/tamanhos-mais-vendidos`);
 
-  if (!res.ok) throw new Error("Erro ao buscar tamanhos mais vendidos");
+  if (!res.ok) {
+    throw new Error("Erro ao buscar tamanhos mais vendidos");
+  }
+
   return res.json();
-}
-
-// =========================
-// LOGOUT (OPCIONAL)
-// =========================
-export function logout() {
-  localStorage.removeItem("token");
 }
