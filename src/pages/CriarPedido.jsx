@@ -44,7 +44,7 @@ export default function CriarPedido() {
   };
 
   // =========================
-  // NORMALIZAR TAMANHO (🔥 AJUSTE PRINCIPAL)
+  // NORMALIZAR TAMANHO ( AJUSTE PRINCIPAL)
   // =========================
   function normalizarTamanho(descricao) {
     return descricao
@@ -147,7 +147,7 @@ export default function CriarPedido() {
           imagem={sorveteImg}
           nome={t.descricao}
           preco={t.precoTamanho}
-          tamanho={normalizarTamanho(t.descricao)}  /* ✅ AJUSTE */
+          tamanho={normalizarTamanho(t.descricao)}  /*  AJUSTE */
           selected={tamanhoId === t.id}
           onSelect={() => setTamanhoId(t.id)}
         />
