@@ -1,4 +1,4 @@
-const BASE_URL = "https://sistema-sorveteria-production.up.railway.app";
+const BASE_URL = "https://sistema-sorveteria.onrender.com";
 
 // =========================
 // ATENDENTES
