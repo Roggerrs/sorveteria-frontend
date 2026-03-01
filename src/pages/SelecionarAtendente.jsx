@@ -1,10 +1,3 @@
-import React from "react";
-
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { listarAtendentes } from "../api/api";
-import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
-
 export default function SelecionarAtendente() {
   const [atendentes, setAtendentes] = useState([]);
   const [atendenteId, setAtendenteId] = useState("");
@@ -21,115 +14,80 @@ export default function SelecionarAtendente() {
     }
     navigate(`/criar-pedido/${atendenteId}`);
   }
-/*
+
+ 
   return (
-    <Box sx={{ maxWidth: 400, margin: "100px auto" }}>
-      <Typography variant="h5" gutterBottom>
-        Selecione o atendente
-      </Typography>
-
-      <Select
-        fullWidth
-        value={atendenteId}
-        onChange={(e) => setAtendenteId(e.target.value)}
-        displayEmpty
-      >
-        <MenuItem value="">
-          <em>Selecione...</em>
-        </MenuItem>
-
-        {atendentes.map((a) => (
-          <MenuItem key={a.id} value={a.id}>
-            {a.nome}
-          </MenuItem>
-        ))}
-      </Select>
-
-      <Button
-        fullWidth
-        variant="contained"
-        color="warning"
-        sx={{ mt: 2 }}
-        onClick={continuar}
-      >
-        Continuar
-      </Button>
-    </Box>
-  );
-  */
-}
-
-return (
-  <Box
-    sx={{
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: "#242424",
-    }}
-  >
     <Box
       sx={{
-        width: "100%",
-        maxWidth: 400,
-        p: 4,
-        backgroundColor: "#2f2f2f",
-        borderRadius: 3,
-        boxShadow: "0 0 20px rgba(0,0,0,0.6)",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#242424",
       }}
     >
-      <Typography
-        variant="h5"
-        gutterBottom
+      <Box
         sx={{
-          textAlign: "center",
-          color: "#ffb347",
-          mb: 3,
+          width: "100%",
+          maxWidth: 400,
+          p: 4,
+          backgroundColor: "#2f2f2f",
+          borderRadius: 3,
+          boxShadow: "0 0 20px rgba(0,0,0,0.6)",
         }}
       >
-        Selecione o atendente
-      </Typography>
+        <Typography
+          variant="h5"
+          gutterBottom
+          sx={{
+            textAlign: "center",
+            color: "#ffb347",
+            mb: 3,
+          }}
+        >
+          Selecione o atendente
+        </Typography>
 
-      <Select
-        fullWidth
-        value={atendenteId}
-        onChange={(e) => setAtendenteId(e.target.value)}
-        displayEmpty
-        sx={{
-          mb: 3,
-          backgroundColor: "#242424",
-          color: "#fff",
-          borderRadius: 2,
-        }}
-      >
-        <MenuItem value="">
-          <em>Selecione...</em>
-        </MenuItem>
-
-        {atendentes.map((a) => (
-          <MenuItem key={a.id} value={a.id}>
-            {a.nome}
+        <Select
+          fullWidth
+          value={atendenteId}
+          onChange={(e) => setAtendenteId(e.target.value)}
+          displayEmpty
+          sx={{
+            mb: 3,
+            backgroundColor: "#242424",
+            color: "#fff",
+            borderRadius: 2,
+          }}
+        >
+          <MenuItem value="">
+            <em>Selecione...</em>
           </MenuItem>
-        ))}
-      </Select>
 
-      <Button
-        fullWidth
-        variant="contained"
-        sx={{
-          py: 1.5,
-          fontWeight: "bold",
-          fontSize: "16px",
-          backgroundColor: "#ff9800",
-          "&:hover": {
-            backgroundColor: "#ffb347",
-          },
-        }}
-        onClick={continuar}
-      >
-        CONTINUAR
-      </Button>
+          {atendentes.map((a) => (
+            <MenuItem key={a.id} value={a.id}>
+              {a.nome}
+            </MenuItem>
+          ))}
+        </Select>
+
+        <Button
+          fullWidth
+          variant="contained"
+          sx={{
+            py: 1.5,
+            fontWeight: "bold",
+            fontSize: "16px",
+            backgroundColor: "#ff9800",
+            "&:hover": {
+              backgroundColor: "#ffb347",
+            },
+          }}
+          onClick={continuar}
+        >
+          CONTINUAR
+        </Button>
+      </Box>
     </Box>
-  </Box>
-);
+  );
+}
