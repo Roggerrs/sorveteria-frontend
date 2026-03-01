@@ -1,3 +1,10 @@
+import React from "react";
+
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { listarAtendentes } from "../api/api";
+import { Box, Button, MenuItem, Select, Typography } from "@mui/material";
+
 export default function SelecionarAtendente() {
   const [atendentes, setAtendentes] = useState([]);
   const [atendenteId, setAtendenteId] = useState("");
@@ -15,7 +22,7 @@ export default function SelecionarAtendente() {
     navigate(`/criar-pedido/${atendenteId}`);
   }
 
- 
+  // ✅ DEIXA SÓ ESSE RETURN
   return (
     <Box
       sx={{
