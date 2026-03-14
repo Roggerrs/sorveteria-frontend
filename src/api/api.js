@@ -1,6 +1,6 @@
 //const BASE_URL = "https://sistema-sorveteria.onrender.com";
 
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://api.3drdesigner.com.br";
 
 // =========================
 // ATENDENTES
