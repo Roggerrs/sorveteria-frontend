@@ -1,8 +1,9 @@
-FROM node:18
+# etapa de build
+FROM node:18 AS build
 
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
+COPY package*.json ./
 
 RUN npm install
 
@@ -10,8 +11,11 @@ COPY . .
 
 RUN npm run build
 
-RUN npm install -g serve
+# etapa final (imagem leve)
+FROM nginx:alpine
 
-EXPOSE 3000
+COPY --from=build /app/dist /usr/share/nginx/html
 
-CMD ["serve","-s","dist","-l","3000"]
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
